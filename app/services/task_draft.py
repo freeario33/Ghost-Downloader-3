@@ -3,11 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from difflib import SequenceMatcher
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any, TYPE_CHECKING
 
 from app.signal import Signal
 from loguru import logger
 
+from app.config.cfg import cfg
 from app.models.task import ResourceTaskOptions, TaskOptions, toTaskError
 
 if TYPE_CHECKING:
@@ -40,6 +42,7 @@ class TaskDraft:
         self._items: list[DraftItem] = []
         self._baseOptions: dict[str, Any] = {}
         self._nameByUrl: dict[str, str] = {}
+        self._subfolderByUrl: dict[str, str] = {}
 
     def urls(self) -> list[str]:
         return [item.url for item in self._items]
@@ -78,6 +81,14 @@ class TaskDraft:
                 item.name = name
                 if item.task is not None:
                     item.task.setName(name)
+        self.itemsChanged.emit()
+
+    def setSubfolderForUrl(self, subfolderByUrl: dict[str, str]) -> None:
+        self._subfolderByUrl = dict(subfolderByUrl)
+        for item in self._items:
+            subfolder = self._subfolderByUrl.get(item.url, "")
+            if subfolder and item.task is not None:
+                item.task.setOptions(self._buildOptions(item))
         self.itemsChanged.emit()
 
     def setBaseOptions(self, options: dict) -> None:
@@ -217,6 +228,10 @@ class TaskDraft:
         options = self._baseOptions.copy()
         if item.categoryOverride is not None:
             options["category"] = item.categoryOverride
+        subfolder = self._subfolderByUrl.get(item.url, "")
+        if subfolder:
+            base = options.get("outputFolder") or cfg.downloadFolder.value
+            options["outputFolder"] = Path(base) / subfolder
         return options
 
     def _isParsing(self) -> bool:
