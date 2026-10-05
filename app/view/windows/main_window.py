@@ -264,10 +264,10 @@ class MainWindow(MSFluentWindow):
             QShortcut(QKeySequence.StandardKey.Close, self).activated.connect(self._onCloseClicked)
 
 
-    def addUrls(self, urls: list[str], nameByUrl: dict[str, str] | None = None, subfolderByUrl: dict[str, str] | None = None) -> None:
+    def addUrls(self, urls: list[str], nameByUrl: dict[str, str] | None = None, subfolderByUrl: dict[str, str] | None = None, keyByUrl: dict[str, str] | None = None) -> None:
         dialog = self._draftDialog
         if urls:
-            dialog.addUrls(urls, nameByUrl, subfolderByUrl)
+            dialog.addUrls(urls, nameByUrl, subfolderByUrl, keyByUrl)
         if not dialog.isVisible():
             dialog.showMask()
 
@@ -510,27 +510,30 @@ class MainWindow(MSFluentWindow):
             urls = [line.strip() for line in mime.text().splitlines()
                     if line.strip() and self._featureService.match(line.strip())]
         if urls:
-            expanded, nameByUrl, subfolderByUrl = self._expandLinkListFiles(urls)
-            self.addUrls(expanded, nameByUrl, subfolderByUrl)
+            expanded, nameByUrl, subfolderByUrl, keyByUrl = self._expandLinkListFiles(urls)
+            self.addUrls(expanded, nameByUrl, subfolderByUrl, keyByUrl)
 
-    def _expandLinkListFiles(self, urls: list[str]) -> tuple[list[str], dict[str, str], dict[str, str]]:
+    def _expandLinkListFiles(self, urls: list[str]) -> tuple[list[str], dict[str, str], dict[str, str], dict[str, str]]:
         expanded: list[str] = []
         nameByUrl: dict[str, str] = {}
         subfolderByUrl: dict[str, str] = {}
+        keyByUrl: dict[str, str] = {}
         for url in urls:
             path = localFilePath(url, {".txt"})
             if path is None:
                 expanded.append(url)
                 continue
             subfolder = path.stem
-            for name, link in parseLinkList(path.read_text(encoding="utf-8", errors="replace")):
-                if self._featureService.match(link):
-                    expanded.append(link)
-                    if name:
-                        nameByUrl[link] = name
+            for entry in parseLinkList(path.read_text(encoding="utf-8", errors="replace")):
+                if self._featureService.match(entry.url):
+                    expanded.append(entry.url)
+                    if entry.name:
+                        nameByUrl[entry.url] = entry.name
+                    if entry.key:
+                        keyByUrl[entry.url] = entry.key
                     if subfolder:
-                        subfolderByUrl[link] = subfolder
-        return expanded, nameByUrl, subfolderByUrl
+                        subfolderByUrl[entry.url] = subfolder
+        return expanded, nameByUrl, subfolderByUrl, keyByUrl
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)

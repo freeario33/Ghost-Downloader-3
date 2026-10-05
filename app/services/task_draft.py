@@ -43,6 +43,7 @@ class TaskDraft:
         self._baseOptions: dict[str, Any] = {}
         self._nameByUrl: dict[str, str] = {}
         self._subfolderByUrl: dict[str, str] = {}
+        self._keyByUrl: dict[str, str] = {}
 
     def urls(self) -> list[str]:
         return [item.url for item in self._items]
@@ -78,6 +79,7 @@ class TaskDraft:
         for item in self._items:
             name = self._nameByUrl.get(item.url, "")
             if name:
+                name = self._featureService.nameWithExtension(item.url, name)
                 item.name = name
                 if item.task is not None:
                     item.task.setName(name)
@@ -88,6 +90,14 @@ class TaskDraft:
         for item in self._items:
             subfolder = self._subfolderByUrl.get(item.url, "")
             if subfolder and item.task is not None:
+                item.task.setOptions(self._buildOptions(item))
+        self.itemsChanged.emit()
+
+    def setKeyForUrl(self, keyByUrl: dict[str, str]) -> None:
+        self._keyByUrl = dict(keyByUrl)
+        for item in self._items:
+            key = self._keyByUrl.get(item.url, "")
+            if key and item.task is not None:
                 item.task.setOptions(self._buildOptions(item))
         self.itemsChanged.emit()
 
@@ -232,6 +242,9 @@ class TaskDraft:
         if subfolder:
             base = options.get("outputFolder") or cfg.downloadFolder.value
             options["outputFolder"] = Path(base) / subfolder
+        key = self._keyByUrl.get(item.url, "")
+        if key:
+            options["hlsKey"] = key
         return options
 
     def _isParsing(self) -> bool:

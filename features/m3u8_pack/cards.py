@@ -186,7 +186,7 @@ class DecryptionKeyCard(OptionCard):
     def _initWidget(self, keys: list):
         self.keyFileButton.setToolTip(self.tr("选择 KEY 文本文件"))
         self.keyFileButton.installEventFilter(ToolTipFilter(self.keyFileButton))
-        self.keysEdit.setPlaceholderText("KID1:KEY1\nKID2:KEY2")
+        self.keysEdit.setPlaceholderText("KID1:KEY1\nUuV5q2c/8ZyLfAqZE6XFVA==")
         self.keysEdit.setPlainText("\n".join(keys))
         self.keyFileLabel.setText(Path(self._keyTextFile).name if self._keyTextFile else "")
 
@@ -215,8 +215,9 @@ class DecryptionKeyCard(OptionCard):
         self.keyFileLabel.setText(Path(path).name)
 
     def options(self) -> dict:
-        keys = [line.strip() for line in self.keysEdit.toPlainText().splitlines() if line.strip()]
-        return {"decryptionKeys": keys, "decryptionKeyFile": self._keyTextFile}
+        keys = [text for line in self.keysEdit.toPlainText().splitlines() if (text := line.strip().removeprefix("key:").strip())]
+        hlsKey = keys[0].split(":")[-1] if len(keys) == 1 else ""
+        return {"decryptionKeys": keys, "decryptionKeyFile": self._keyTextFile, "hlsKey": hlsKey}
 
 
 class MuxImportCard(OptionCard):

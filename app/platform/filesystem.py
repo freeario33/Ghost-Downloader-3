@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 import shutil
 import sys
+from dataclasses import dataclass
 from os import PathLike
 from pathlib import Path
 from stat import S_ISDIR
@@ -98,16 +99,33 @@ def localFilePath(url: str, validSuffixes: set[str] | None = None) -> Path | Non
 
 
 LINK_LIST_LINE_PATTERN = re.compile(r"^(?P<name>.*?),(?P<url>\w+://\S+)$")
+LINK_LIST_LINE_KEY_PATTERN = re.compile(r"^(?P<name>.*?),(?P<url>\w+://\S+?),(?P<key>\S+)$")
 
 
-def parseLinkList(text: str) -> list[tuple[str, str]]:
-    """Parse lines of `name,url` into (name, url) pairs. Lines without a
-    comma-separated URL are skipped."""
-    links: list[tuple[str, str]] = []
+@dataclass(frozen=True)
+class LinkListEntry:
+    name: str
+    url: str
+    key: str = ""
+
+
+def parseLinkList(text: str) -> list[LinkListEntry]:
+    """Parse lines of `name,url` or `name,url,key` into entries. Lines without a
+    comma-separated URL are skipped; the key segment is optional."""
+    links: list[LinkListEntry] = []
     for line in text.splitlines():
-        match = LINK_LIST_LINE_PATTERN.match(line.strip())
+        stripped = line.strip()
+        match = LINK_LIST_LINE_KEY_PATTERN.match(stripped)
         if match:
-            links.append((match.group("name").strip(), match.group("url").strip()))
+            links.append(LinkListEntry(
+                match.group("name").strip(),
+                match.group("url").strip(),
+                match.group("key").strip(),
+            ))
+            continue
+        match = LINK_LIST_LINE_PATTERN.match(stripped)
+        if match:
+            links.append(LinkListEntry(match.group("name").strip(), match.group("url").strip()))
     return links
 
 

@@ -28,6 +28,14 @@ MEDIA_SUFFIXES = {
 MANIFEST_SUFFIXES = {".m3u8", ".m3u", ".mpd"}
 
 
+def withExtension(name: str, extension: str) -> str:
+    """Replace a known media suffix with `extension`, or append it when the
+    name carries no media suffix of its own."""
+    suffix = Path(name).suffix
+    stem = name[:-len(suffix)] if suffix.lower() in MEDIA_SUFFIXES else name
+    return f"{stem}.{extension}"
+
+
 class M3U8Parser(TaskParser):
     priority = 80
 
@@ -136,10 +144,7 @@ class M3U8Parser(TaskParser):
             name = unquote(Path(urlparse(manifestUrl).path).name)
 
         if name:
-            suffix = Path(name).suffix
-            stem = name[:-len(suffix)] if suffix.lower() in MEDIA_SUFFIXES else name
-            name = toSafeFilename(stem, fallback="stream")
-            name = f"{name}.{extension}"
+            name = toSafeFilename(withExtension(name, extension), fallback="stream")
         else:
             name = f"stream.{extension}"
 
@@ -170,8 +175,6 @@ class M3U8Parser(TaskParser):
             customMuxAfterDone=m3u8Config.customMuxAfterDone.value,
             subtitleFormat=m3u8Config.subtitleFormat.value,
             shouldSelectAllAudioSubtitle=m3u8Config.shouldSelectAllAudioSubtitle.value,
-            maxSpeed=m3u8Config.maxSpeed.value,
-            speedUnit=m3u8Config.speedUnit.value,
             adKeyword=m3u8Config.adKeyword.value,
             shouldOmitDateInfo=m3u8Config.shouldOmitDateInfo.value,
             shouldKeepImageSegments=m3u8Config.shouldKeepImageSegments.value,
@@ -263,6 +266,9 @@ class M3U8Pack(FeaturePack):
     def draftCardClass(self, task: Task) -> type | None:
         from .cards import M3U8DraftCard
         return M3U8DraftCard
+
+    def nameWithExtension(self, name: str) -> str:
+        return withExtension(name, m3u8Config.outputFormat.value)
 
     def __init__(self, services):
         self.config = m3u8Config

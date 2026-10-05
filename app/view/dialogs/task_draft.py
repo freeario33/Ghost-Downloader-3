@@ -76,6 +76,7 @@ class TaskDraftDialog(MessageBoxBase):
         self._dragPos = QPoint()
         self._nameByUrl: dict[str, str] = {}
         self._subfolderByUrl: dict[str, str] = {}
+        self._keyByUrl: dict[str, str] = {}
         self.titleLabel = SubtitleLabel(self.tr("添加任务"), self)
         self.urlEdit = AutoSizingEdit(self)
         self.progressBar = IndeterminateProgressBar(self)
@@ -192,13 +193,15 @@ class TaskDraftDialog(MessageBoxBase):
 
         return self.exec()
 
-    def addUrls(self, urls: list[str], nameByUrl: dict[str, str] | None = None, subfolderByUrl: dict[str, str] | None = None) -> None:
+    def addUrls(self, urls: list[str], nameByUrl: dict[str, str] | None = None, subfolderByUrl: dict[str, str] | None = None, keyByUrl: dict[str, str] | None = None) -> None:
         if not urls:
             return
         if nameByUrl:
             self._nameByUrl.update(nameByUrl)
         if subfolderByUrl:
             self._subfolderByUrl.update(subfolderByUrl)
+        if keyByUrl:
+            self._keyByUrl.update(keyByUrl)
         existing = set(self._urls())
         toAdd = [stripped for u in urls if (stripped := u.strip()) and stripped not in existing]
         if not toAdd:
@@ -283,6 +286,7 @@ class TaskDraftDialog(MessageBoxBase):
         self._draft.setBaseOptions(self.optionGroup.options())
         self._draft.setNameForUrl(self._nameByUrl)
         self._draft.setSubfolderForUrl(self._subfolderByUrl)
+        self._draft.setKeyForUrl(self._keyByUrl)
         self._draft.setUrls(self._urls())
 
     def _onParseSucceeded(self, url: str, task: Task) -> None:

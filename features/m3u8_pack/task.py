@@ -132,8 +132,6 @@ class M3U8TaskStep(TaskStep):
     subtitleFormat: str = "SRT"
     selectVideo: str = ""
     shouldSelectAllAudioSubtitle: bool = True
-    maxSpeed: int = -1
-    speedUnit: str = "Mbps"
     adKeyword: str = ""
     shouldOmitDateInfo: bool = False
     shouldKeepImageSegments: bool = False
@@ -142,6 +140,7 @@ class M3U8TaskStep(TaskStep):
     shouldUseMp4RealTimeDecryption: bool = True
     decryptionKeys: list[str] = field(default_factory=list)
     decryptionKeyFile: str = ""
+    hlsKey: str = ""
     muxImports: list[str] = field(default_factory=list)
     shouldKeepLiveSegments: bool = False
     shouldUseLivePipeMux: bool = False
@@ -181,6 +180,8 @@ class M3U8TaskStep(TaskStep):
             self.decryptionKeys = options["decryptionKeys"]
         if "decryptionKeyFile" in options:
             self.decryptionKeyFile = options["decryptionKeyFile"]
+        if "hlsKey" in options:
+            self.hlsKey = options["hlsKey"]
         if "muxImports" in options:
             self.muxImports = options["muxImports"]
 
@@ -223,10 +224,6 @@ class M3U8TaskStep(TaskStep):
         else:
             args.append(f"--auto-select={toBool(self.shouldAutoSelect)}")
 
-        if self.maxSpeed > 0:
-            args.append(f"--max-speed={self.maxSpeed}{self.speedUnit}")
-        elif cfg.isSpeedLimitEnabled.value:
-            args.append(f"--max-speed={int(cfg.speedLimitation.value)}Bps")
         if self.adKeyword:
             args.append(f"--ad-keyword={self.adKeyword}")
         if self.shouldOmitDateInfo:
@@ -255,6 +252,9 @@ class M3U8TaskStep(TaskStep):
                 args.append(f"--key={text}")
         if self.decryptionKeyFile:
             args.append(f"--key-text-file={toPosixPath(Path(self.decryptionKeyFile))}")
+        if self.hlsKey:
+            args.append("--custom-hls-method=AES_128")
+            args.append(f"--custom-hls-key={self.hlsKey}")
 
         if self.task.isLive:
             args.append("--live-real-time-merge=true")
@@ -367,9 +367,12 @@ class M3U8TaskStep(TaskStep):
         )
         if found is None:
             return False
-        if found.suffix.lower() != target.suffix.lower():
+        if target.suffix and found.suffix.lower() != target.suffix.lower():
             raise TaskError("N_m3u8DL-RE 输出了 {actual} 文件，与任务的 {expected} 不符",
                             actual=found.suffix, expected=target.suffix)
+        if not target.suffix:
+            target = target.with_suffix(found.suffix)
+            self.task.name = target.name
         self.task.fileSize = max(self.task.fileSize, found.stat().st_size)
         os.replace(found, target)
         return True

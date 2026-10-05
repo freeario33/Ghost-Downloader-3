@@ -46,6 +46,14 @@ class FeatureService:
     def packById(self, packId: str):
         return self._packByPackId.get(packId)
 
+    def nameWithExtension(self, url: str, name: str) -> str:
+        for parser in self._parsers:
+            if parser.match(TaskOptions(url=url)):
+                if hasattr(parser.pack, "nameWithExtension"):
+                    return parser.pack.nameWithExtension(name)
+                return name
+        return name
+
     def register(self, pack: FeaturePack) -> None:
         self._packs.append(pack)
         self._packByPackId[pack.packId] = pack

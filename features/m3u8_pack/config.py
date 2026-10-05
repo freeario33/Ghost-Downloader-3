@@ -49,8 +49,6 @@ class M3U8Config(PackConfig):
     )
     decryptionBinaryPath = ConfigItem("M3U8", "DecryptionBinaryPath", "")
     shouldUseMp4RealTimeDecryption = ConfigItem("M3U8", "MP4RealTimeDecryption", True, BoolValidator())
-    maxSpeed = RangeConfigItem("M3U8", "MaxSpeed", -1, RangeValidator(-1, 1000000))
-    speedUnit = OptionsConfigItem("M3U8", "SpeedUnit", "Mbps", OptionsValidator(["Mbps", "Kbps"]))
     adKeyword = ConfigItem("M3U8", "AdKeyword", "")
     subtitleFormat = OptionsConfigItem("M3U8", "SubtitleFormat", "SRT", OptionsValidator(["SRT", "VTT"]))
     shouldOmitDateInfo = ConfigItem("M3U8", "NoDateInfo", False, BoolValidator())
@@ -111,10 +109,6 @@ class M3U8Config(PackConfig):
                 configItem=self.decryptionBinaryPath, parent=m3u8Group),
             SwitchSettingCard(FluentIcon.FINGERPRINT, self.tr("MP4 实时解密"),
                 self.tr("下载 MP4 分片时实时解密"), self.shouldUseMp4RealTimeDecryption, m3u8Group),
-            SpinBoxSettingCard(FluentIcon.SPEED_HIGH, self.tr("限速"),
-                self.tr("最大下载速度，-1 为不限速"), "", self.maxSpeed, m3u8Group, 1),
-            ComboBoxSettingCard(self.speedUnit, FluentIcon.TAG, self.tr("限速单位"),
-                self.tr("限速数值的单位"), texts=["Mbps", "Kbps"], parent=m3u8Group),
             LineEditSettingCard(FluentIcon.REMOVE, self.tr("广告过滤"),
                 self.tr("匹配广告分片 URL 的正则表达式"), self.adKeyword, m3u8Group, placeholder=self.tr("正则表达式")),
             ComboBoxSettingCard(self.subtitleFormat, FluentIcon.DICTIONARY, self.tr("字幕格式"),
