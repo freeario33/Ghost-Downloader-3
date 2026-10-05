@@ -10,6 +10,11 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO))
 
+# Windows runner 的 stdout 默认是 cp1252，打印中文参数（--product-name 等）会 UnicodeEncodeError
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 from app.config.constants import VERSION, BUILD_VERSION, YEAR, AUTHOR, DESKTOP_ID
 
 MACOS_DOCUMENT_TYPES = [
