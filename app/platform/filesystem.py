@@ -97,6 +97,20 @@ def localFilePath(url: str, validSuffixes: set[str] | None = None) -> Path | Non
     return path
 
 
+LINK_LIST_LINE_PATTERN = re.compile(r"^(?P<name>.*?),(?P<url>\w+://\S+)$")
+
+
+def parseLinkList(text: str) -> list[tuple[str, str]]:
+    """Parse lines of `name,url` into (name, url) pairs. Lines without a
+    comma-separated URL are skipped."""
+    links: list[tuple[str, str]] = []
+    for line in text.splitlines():
+        match = LINK_LIST_LINE_PATTERN.match(line.strip())
+        if match:
+            links.append((match.group("name").strip(), match.group("url").strip()))
+    return links
+
+
 def findExecutable(installFolder: Path, name: str) -> str:
     exe = f"{name}.exe" if sys.platform == "win32" else name
     candidate = installFolder / exe

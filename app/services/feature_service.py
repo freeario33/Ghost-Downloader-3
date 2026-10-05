@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import asyncio
+import time
 from dataclasses import replace
 from threading import Event
 from typing import TYPE_CHECKING
@@ -9,6 +11,8 @@ from app.config.paths import FEATURES_DIR
 from app.models.task import TaskOptions
 from app.platform import file_association
 from app.loader import loadPacks
+
+PARSE_MIN_INTERVAL_SECONDS = 10.0
 
 if TYPE_CHECKING:
     from app.models.pack import FeaturePack, TaskParser, FileType, UriScheme, PackPage
@@ -27,6 +31,18 @@ class FeatureService:
         self._parsers: list[TaskParser] = []
         self._packByPackId: dict[str, FeaturePack] = {}
         self._pagePackMap: dict[type, FeaturePack] = {}
+        self._parseGateByHost: dict[str, asyncio.Lock] = {}
+        self._lastParseAtByHost: dict[str, float] = {}
+
+    async def _awaitParseSlot(self, host: str) -> None:
+        lock = self._parseGateByHost.setdefault(host, asyncio.Lock())
+        async with lock:
+            lastAt = self._lastParseAtByHost.get(host)
+            if lastAt is not None:
+                wait = lastAt + PARSE_MIN_INTERVAL_SECONDS - time.monotonic()
+                if wait > 0:
+                    await asyncio.sleep(wait)
+            self._lastParseAtByHost[host] = time.monotonic()
 
     @property
     def packs(self) -> list[FeaturePack]:
@@ -75,9 +91,11 @@ class FeatureService:
                 schemeToggle.connect(self._registerAssociations)
 
     async def parse(self, options: TaskOptions) -> Task:
+        host = urlparse(options.url).hostname or ""
+        await self._awaitParseSlot(host)
+
         if not options.clientProfile:
             from app.client import matchIdentityPreset
-            host = urlparse(options.url).hostname or ""
             preset = matchIdentityPreset(host)
             if preset is not None:
                 kwargs = {}

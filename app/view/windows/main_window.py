@@ -20,6 +20,7 @@ from app.config.cfg import CloseMode, cfg
 from app.config.constants import DONATE_URL, FEEDBACK_URL
 from app.config.paths import APP_DATA_DIR
 from app.platform.desktop import raiseWindow, revealInFolder
+from app.platform.filesystem import localFilePath, parseLinkList
 from app.services.task_draft import TaskDraft
 from app.i18n import toLocalizedError
 from app.models.task import TaskError, TaskOptions
@@ -509,7 +510,19 @@ class MainWindow(MSFluentWindow):
             urls = [line.strip() for line in mime.text().splitlines()
                     if line.strip() and self._featureService.match(line.strip())]
         if urls:
-            self.addUrls(urls)
+            self.addUrls(self._expandLinkListFiles(urls))
+
+    def _expandLinkListFiles(self, urls: list[str]) -> list[str]:
+        expanded: list[str] = []
+        for url in urls:
+            path = localFilePath(url, {".txt"})
+            if path is None:
+                expanded.append(url)
+                continue
+            for _, link in parseLinkList(path.read_text(encoding="utf-8", errors="replace")):
+                if self._featureService.match(link):
+                    expanded.append(link)
+        return expanded
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
