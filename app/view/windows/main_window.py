@@ -264,10 +264,10 @@ class MainWindow(MSFluentWindow):
             QShortcut(QKeySequence.StandardKey.Close, self).activated.connect(self._onCloseClicked)
 
 
-    def addUrls(self, urls: list[str]) -> None:
+    def addUrls(self, urls: list[str], nameByUrl: dict[str, str] | None = None) -> None:
         dialog = self._draftDialog
         if urls:
-            dialog.addUrls(urls)
+            dialog.addUrls(urls, nameByUrl)
         if not dialog.isVisible():
             dialog.showMask()
 
@@ -510,19 +510,23 @@ class MainWindow(MSFluentWindow):
             urls = [line.strip() for line in mime.text().splitlines()
                     if line.strip() and self._featureService.match(line.strip())]
         if urls:
-            self.addUrls(self._expandLinkListFiles(urls))
+            expanded, nameByUrl = self._expandLinkListFiles(urls)
+            self.addUrls(expanded, nameByUrl)
 
-    def _expandLinkListFiles(self, urls: list[str]) -> list[str]:
+    def _expandLinkListFiles(self, urls: list[str]) -> tuple[list[str], dict[str, str]]:
         expanded: list[str] = []
+        nameByUrl: dict[str, str] = {}
         for url in urls:
             path = localFilePath(url, {".txt"})
             if path is None:
                 expanded.append(url)
                 continue
-            for _, link in parseLinkList(path.read_text(encoding="utf-8", errors="replace")):
+            for name, link in parseLinkList(path.read_text(encoding="utf-8", errors="replace")):
                 if self._featureService.match(link):
                     expanded.append(link)
-        return expanded
+                    if name:
+                        nameByUrl[link] = name
+        return expanded, nameByUrl
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)

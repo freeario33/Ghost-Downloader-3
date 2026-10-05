@@ -74,6 +74,7 @@ class TaskDraftDialog(MessageBoxBase):
         self.destroyed.connect(self._standaloneWrapper.deleteLater)
         self._isStandalone = False
         self._dragPos = QPoint()
+        self._nameByUrl: dict[str, str] = {}
         self.titleLabel = SubtitleLabel(self.tr("添加任务"), self)
         self.urlEdit = AutoSizingEdit(self)
         self.progressBar = IndeterminateProgressBar(self)
@@ -190,9 +191,11 @@ class TaskDraftDialog(MessageBoxBase):
 
         return self.exec()
 
-    def addUrls(self, urls: list[str]) -> None:
+    def addUrls(self, urls: list[str], nameByUrl: dict[str, str] | None = None) -> None:
         if not urls:
             return
+        if nameByUrl:
+            self._nameByUrl.update(nameByUrl)
         existing = set(self._urls())
         toAdd = [stripped for u in urls if (stripped := u.strip()) and stripped not in existing]
         if not toAdd:
@@ -275,6 +278,7 @@ class TaskDraftDialog(MessageBoxBase):
 
     def _onParseNeeded(self) -> None:
         self._draft.setBaseOptions(self.optionGroup.options())
+        self._draft.setNameForUrl(self._nameByUrl)
         self._draft.setUrls(self._urls())
 
     def _onParseSucceeded(self, url: str, task: Task) -> None:

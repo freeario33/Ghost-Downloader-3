@@ -8,7 +8,7 @@ from typing import Any, TYPE_CHECKING
 from app.signal import Signal
 from loguru import logger
 
-from app.models.task import TaskOptions, toTaskError
+from app.models.task import ResourceTaskOptions, TaskOptions, toTaskError
 
 if TYPE_CHECKING:
     from app.models.task import Task, TaskError
@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 @dataclass
 class DraftItem:
     url: str
+    name: str = ""
     parseId: str = ""
     task: Task | None = None
     error: TaskError | None = None
@@ -38,6 +39,7 @@ class TaskDraft:
         self._featureService = featureService
         self._items: list[DraftItem] = []
         self._baseOptions: dict[str, Any] = {}
+        self._nameByUrl: dict[str, str] = {}
 
     def urls(self) -> list[str]:
         return [item.url for item in self._items]
@@ -66,6 +68,16 @@ class TaskDraft:
         if item is None or item.task is None:
             return
         mutate(item.task)
+        self.itemsChanged.emit()
+
+    def setNameForUrl(self, nameByUrl: dict[str, str]) -> None:
+        self._nameByUrl = dict(nameByUrl)
+        for item in self._items:
+            name = self._nameByUrl.get(item.url, "")
+            if name:
+                item.name = name
+                if item.task is not None:
+                    item.task.setName(name)
         self.itemsChanged.emit()
 
     def setBaseOptions(self, options: dict) -> None:
@@ -103,7 +115,7 @@ class TaskDraft:
                     self._coroutineRunner.cancel(item.parseId)
                     item.parseId = ""
             for url in urls[newStart:newEnd]:
-                item = DraftItem(url=url)
+                item = DraftItem(url=url, name=self._nameByUrl.get(url, ""))
                 self._submit(item)
                 if item.error is not None:
                     submitErrors.append((url, item.error))
@@ -127,10 +139,13 @@ class TaskDraft:
 
     def _submit(self, item: DraftItem) -> None:
         item.error = None
+        options = {**self._baseOptions, "url": item.url}
+        if item.name:
+            options["name"] = item.name
         try:
             item.parseId = self._coroutineRunner.submit(
                 self._featureService.parse(
-                    TaskOptions.fromOptions({**self._baseOptions, "url": item.url})
+                    ResourceTaskOptions.fromOptions(options)
                 ),
                 done=self._onParsed,
                 failed=self._onParseFailed,
@@ -158,7 +173,7 @@ class TaskDraft:
                     item.parseId = ""
             else:
                 newUrls.append(url)
-                item = DraftItem(url=url)
+                item = DraftItem(url=url, name=self._nameByUrl.get(url, ""))
                 self._items.append(item)
                 byUrl[url] = item
 
