@@ -6,7 +6,7 @@ from loguru import logger
 
 from app.config.paths import APP_DATA_DIR
 
-logger.add(f"{APP_DATA_DIR}/GhostDownloader.log", rotation="512 KB", retention=5)
+logger.add(f"{APP_DATA_DIR}/幽灵下载者.log", rotation="512 KB", retention=5)
 
 
 def _exceptionHook(exceptionType, value, tb):
@@ -46,7 +46,7 @@ def setupEnvironment():
         font.setHintingPreference(QFont.HintingPreference.PreferNoHinting)
         QApplication.setFont(font)
 
-    logger.info("Ghost Downloader v{} launched", VERSION)
+    logger.info("幽灵下载者 v{} launched", VERSION)
 
 
 def startApp(application, isSilent=False):

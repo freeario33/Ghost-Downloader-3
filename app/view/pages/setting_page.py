@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import sys
 
-from PySide6.QtCore import Qt, QUrl
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QVBoxLayout, QWidget, QApplication
 from qfluentwidgets import (
     ComboBoxSettingCard, FluentIcon, HyperlinkCard, HyperlinkButton, InfoBar,
-    InfoBarPosition, MessageBox, PrimaryPushSettingCard, PushButton, PushSettingCard,
+    InfoBarPosition, MessageBox, PrimaryPushSettingCard, PushSettingCard,
     RangeSettingCard, SwitchSettingCard, ToolButton, ToolTipFilter,
 )
 
@@ -18,10 +17,7 @@ from app.i18n import toLocalizedError
 from app.models.task import toTaskError
 from app.platform.android import IS_ANDROID
 from app.services.port_listener import ListenStatus
-from app.config.constants import (
-    AUTHOR, AUTHOR_URL, CHROME_WEBSTORE_URL, EDGE_ADDONS_URL,
-    FEEDBACK_URL, FIREFOX_ADDONS_URL, VERSION, YEAR,
-)
+from app.config.constants import CHROME_WEBSTORE_URL, EDGE_ADDONS_URL, FIREFOX_ADDONS_URL
 from app.view.components.category_settings import CategoryRulesCard
 from app.view.components.setting_card_group import (
     CollapsibleSettingCard, CollapsibleSettingCardGroup, QWIDGETSIZE_MAX,
@@ -222,7 +218,7 @@ class SettingPage(ScrollArea):
                     extensions = "/".join(ext for ft in fileTypes for ext in ft.extensions)
                     associationCards.append(SwitchSettingCard(
                         FluentIcon.DOCUMENT, self.tr("关联 {0} 文件").format(extensions),
-                        self.tr("双击 {0} 文件时用 Ghost Downloader 打开").format(extensions),
+                        self.tr("双击 {0} 文件时用 幽灵下载者 打开").format(extensions),
                         pack.config.associateFileTypes,
                     ))
                 schemes = pack.uriSchemes()
@@ -230,7 +226,7 @@ class SettingPage(ScrollArea):
                     schemeText = "/".join(s.displayName for s in schemes)
                     associationCards.append(SwitchSettingCard(
                         FluentIcon.LINK, self.tr("处理 {0} 链接").format(schemeText),
-                        self.tr("点击 {0} 链接时唤起 Ghost Downloader").format(schemeText),
+                        self.tr("点击 {0} 链接时唤起 幽灵下载者").format(schemeText),
                         pack.config.associateUriSchemes,
                     ))
             self.associationGroup.addSettingCards(associationCards)
@@ -314,7 +310,7 @@ class SettingPage(ScrollArea):
 
         self.autoRunCard = SwitchSettingCard(
             FluentIcon.VPN, self.tr("开机启动"),
-            self.tr("在系统启动时静默运行 Ghost Downloader"),
+            self.tr("在系统启动时静默运行 幽灵下载者"),
             cfg.shouldRunAtLogin,
         )
         from app.config.paths import APP_DATA_DIR, isPortable
@@ -355,33 +351,7 @@ class SettingPage(ScrollArea):
             softwareCards.append(self.migrateCard)
         self.softwareGroup.addSettingCards(softwareCards)
 
-        self.feedbackCard = PrimaryPushSettingCard(
-            self.tr("提供反馈"), FluentIcon.FEEDBACK,
-            self.tr("提供反馈"),
-            self.tr("通过提供反馈来帮助我们改进 Ghost Downloader，也可查看日志排查问题"),
-        )
-        self.openLogButton = PushButton(self.tr("查看日志"), self.feedbackCard)
-        self.feedbackCard.hBoxLayout.insertSpacing(6, 8)
-        self.feedbackCard.hBoxLayout.insertWidget(
-            7, self.openLogButton, 0, Qt.AlignmentFlag.AlignRight,
-        )
-
-        self.packInfoCard = PrimaryPushSettingCard(
-            self.tr("查看详情"), FluentIcon.IOT, self.tr("功能包"),
-            self.tr("管理已安装的功能包"),
-        )
-        self.aboutCard = PrimaryPushSettingCard(
-            self.tr("检查更新"), FluentIcon.INFO, self.tr("关于"),
-            f"© Copyright {YEAR}, {AUTHOR}. Version {VERSION}",
-        )
-
-        self.aboutGroup.addSettingCards([
-            HyperlinkCard(AUTHOR_URL, self.tr("打开作者的个人空间"), FluentIcon.PROJECTOR,
-                          self.tr("了解作者"), self.tr("发现更多 {} 的作品").format(AUTHOR)),
-            self.feedbackCard,
-            self.packInfoCard,
-            self.aboutCard,
-        ])
+        self.aboutGroup.addSettingCards([])
 
     def _initLayout(self) -> None:
         self.addSettingGroup(self.generalGroup)
@@ -418,10 +388,7 @@ class SettingPage(ScrollArea):
         if sys.platform != "darwin":
             self.urlSchemeCard.checkedChanged.connect(self._onUrlSchemeChanged)
         self.autoRunCard.checkedChanged.connect(self._onRunAtLoginChanged)
-        self.packInfoCard.clicked.connect(self._onPackInfoClicked)
-        self.aboutCard.clicked.connect(self._onAboutCardClicked)
-        self.feedbackCard.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
-        self.openLogButton.clicked.connect(self._onOpenLogClicked)
+
         if not IS_ANDROID:
             self.migrateCard.clicked.connect(self._onMigrateClicked)
 
@@ -525,37 +492,6 @@ class SettingPage(ScrollArea):
 
         QApplication.instance().aboutToQuit.connect(lambda: migrate(target))
         QApplication.instance().quit()
-
-    def _onPackInfoClicked(self) -> None:
-        from app.view.dialogs.pack_info import PackInfoDialog
-        dialog = PackInfoDialog(self._featureService.packs, self._updateService, self.window())
-        dialog.exec()
-
-    def _onAboutCardClicked(self) -> None:
-        from app.services.update_service import UpdateState
-
-        InfoBar.info(self.tr("检查更新"), self.tr("正在检查更新..."),
-                     duration=1500, position=InfoBarPosition.BOTTOM_RIGHT, parent=self.window())
-
-        def onChecked(info):
-            if info.targetId != "app" or info.state not in (UpdateState.AVAILABLE, UpdateState.IDLE):
-                return
-            self._updateService.changed.disconnect(onChecked)
-            if info.state == UpdateState.IDLE:
-                if info.error is not None:
-                    InfoBar.error(self.tr("检查更新失败"), self.tr("无法获取最新版本信息"),
-                                  duration=3000, position=InfoBarPosition.BOTTOM_RIGHT, parent=self.window())
-                else:
-                    InfoBar.success(self.tr("当前已是最新版本"), "",
-                                    duration=3000, position=InfoBarPosition.BOTTOM_RIGHT, parent=self.window())
-
-        self._updateService.changed.connect(onChecked, owner=self)
-        self._updateService.check()
-
-    def _onOpenLogClicked(self) -> None:
-        from app.config.paths import APP_DATA_DIR
-        from app.platform.desktop import revealInFolder
-        revealInFolder(f"{APP_DATA_DIR}/GhostDownloader.log")
 
     @property
     def searchPlaceholder(self) -> str:

@@ -302,7 +302,7 @@ class BTSession:
             from app.config.constants import VERSION
             params = self._loadDhtState()
             params.settings = {
-                "user_agent": f"GhostDownloader/{VERSION} libtorrent/{lt.__version__}",
+                "user_agent": f"幽灵下载者/{VERSION} libtorrent/{lt.__version__}",
                 "listen_interfaces": (
                     f"0.0.0.0:{bittorrentConfig.listenPort.value},"
                     f"[::]:{bittorrentConfig.listenPort.value}"

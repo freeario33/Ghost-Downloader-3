@@ -336,7 +336,7 @@ jobs:
           chmod +x "dist/Ghost-Downloader-3.app/Contents/MacOS/Ghost-Downloader-3"
           rm -rf "dist/Ghost-Downloader-3.build"
           rm -rf "dist/Ghost-Downloader-3.dist"
-          mv "dist/Ghost-Downloader-3.app" "dist/Ghost Downloader.app"
+          mv "dist/Ghost-Downloader-3.app" "dist/幽灵下载者.app"
           mv "app/assets/修复软件损坏" "dist/修复软件损坏"
           chmod +x "dist/修复软件损坏"
 
@@ -344,12 +344,12 @@ jobs:
         run: |
           cmake -B build-updater -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.architecture }} tools/updater
           cmake --build build-updater
-          cp build-updater/updater "dist/Ghost Downloader.app/Contents/MacOS/"
-          cp macos/hpatchz "dist/Ghost Downloader.app/Contents/MacOS/"
-          chmod +x "dist/Ghost Downloader.app/Contents/MacOS/hpatchz"
+          cp build-updater/updater "dist/幽灵下载者.app/Contents/MacOS/"
+          cp macos/hpatchz "dist/幽灵下载者.app/Contents/MacOS/"
+          chmod +x "dist/幽灵下载者.app/Contents/MacOS/hpatchz"
 
       - name: Restructure bundle for signing
-        run: uv run scripts/restructure_macos_bundle.py "dist/Ghost Downloader.app"
+        run: uv run scripts/restructure_macos_bundle.py "dist/幽灵下载者.app"
 
       - name: Import signing certificate
         if: ${{ env.HAS_APPLE_CERT == 'true' }}
@@ -382,7 +382,7 @@ jobs:
         run: |
           IDENTITY="Developer ID Application: ${{ secrets.APPLE_SIGN_NAME }} ($APPLE_TEAM_ID)"
 
-          find "dist/Ghost Downloader.app" -type f | while read -r f; do
+          find "dist/幽灵下载者.app" -type f | while read -r f; do
             if file -b "$f" | grep -q "Mach-O"; then
               codesign --force --options runtime --timestamp \
                 --entitlements scripts/entitlements.plist \
@@ -392,9 +392,9 @@ jobs:
 
           codesign --force --options runtime --timestamp \
             --entitlements scripts/entitlements.plist \
-            --sign "$IDENTITY" "dist/Ghost Downloader.app"
+            --sign "$IDENTITY" "dist/幽灵下载者.app"
 
-          codesign --verify --deep --strict "dist/Ghost Downloader.app"
+          codesign --verify --deep --strict "dist/幽灵下载者.app"
           echo "Signing complete."
 
       - name: Reinstall openssl libs
@@ -413,19 +413,19 @@ jobs:
 
           rm -rf "$DMG_SOURCE_DIR"
           mkdir -p "$DMG_SOURCE_DIR"
-          cp -R "dist/Ghost Downloader.app" "$DMG_SOURCE_DIR/"
+          cp -R "dist/幽灵下载者.app" "$DMG_SOURCE_DIR/"
           find "$DMG_SOURCE_DIR" -name ".DS_Store" -delete
 
           create-dmg \
-            --volname "Ghost Downloader" \
+            --volname "幽灵下载者" \
             --volicon "app/assets/logo.icns" \
             --background "app/assets/backgroundImage-2X.png" \
             --window-pos 200 120 \
             --window-size 664 404 \
             --icon-size 72 \
             --text-size 14 \
-            --icon "Ghost Downloader.app" 190 200 \
-            --hide-extension "Ghost Downloader.app" \
+            --icon "幽灵下载者.app" 190 200 \
+            --hide-extension "幽灵下载者.app" \
             --app-drop-link 370 200 \
             --add-file "修复软件损坏" "dist/修复软件损坏" 610 200 \
             --hdiutil-quiet \
@@ -485,7 +485,7 @@ jobs:
           OLD_COPY="dist/old-for-diff"
           NEW_COPY="dist/new-for-diff"
           cp -a "$OLD_APP" "$OLD_COPY"
-          cp -a "dist/Ghost Downloader.app" "$NEW_COPY"
+          cp -a "dist/幽灵下载者.app" "$NEW_COPY"
           find "$OLD_COPY/Contents/MacOS" -type l -delete 2>/dev/null || true
           find "$NEW_COPY/Contents/MacOS" -type l -delete 2>/dev/null || true
 
@@ -558,7 +558,7 @@ jobs:
         run: |
           DIST_DIR="dist/Ghost-Downloader-3.dist"
           DEB_ROOT="$RUNNER_TEMP/deb-root"
-          APPDIR="$RUNNER_TEMP/GhostDownloader.AppDir"
+          APPDIR="$RUNNER_TEMP/幽灵下载者.AppDir"
           PACKAGE_NAME="ghost-downloader"
           INSTALL_DIR="/opt/Ghost-Downloader-3"
           DESKTOP_FILE="$PACKAGE_NAME.desktop"
@@ -595,14 +595,14 @@ jobs:
           Priority: optional
           Architecture: ${{ matrix.deb_arch }}
           Maintainer: XiaoYouChR <XiaoYouChR@qq.com>
-          Description: Ghost Downloader
+          Description: 幽灵下载者
            A multi-threading downloader based on PySide6.
           EOF
 
           cat > "$DEB_ROOT/usr/share/applications/$DESKTOP_FILE" <<EOF
           [Desktop Entry]
           Type=Application
-          Name=Ghost Downloader
+          Name=幽灵下载者
           Comment=A multi-threading downloader based on PySide6
           Exec=$PACKAGE_NAME
           Icon=$PACKAGE_NAME
@@ -967,7 +967,7 @@ jobs:
       - name: Purge jsDelivr cache
         run: |
           for f in versions.json dist/packs/*.zip; do
-            curl -s "https://purge.jsdelivr.net/gh/XiaoYouChR/Ghost-Downloader-3@main/${f}" || true
+            curl -s "https://purge.jsdelivr.net/gh/@main/${f}" || true
           done
 
       - name: Push to CNB
@@ -978,7 +978,7 @@ jobs:
         run: |
           if [ -z "$CNB_TOKEN" ]; then echo "No CNB_TOKEN, skipping"; exit 0; fi
           git fetch origin tag "v${VERSION}"
-          REMOTE="https://cnb:${CNB_TOKEN}@cnb.cool/XiaoYouChR/Ghost-Downloader-3"
+          REMOTE="https://cnb:${CNB_TOKEN}@cnb.cool/"
           git push "$REMOTE" main 2>&1 | sed "s/${CNB_TOKEN}/****/g" || true
 
       - name: Route GitCode to HK server
@@ -999,7 +999,7 @@ jobs:
         run: |
           if [ -z "$GITCODE_TOKEN" ]; then echo "No GITCODE_TOKEN, skipping"; exit 0; fi
           git fetch origin tag "v${VERSION}"
-          REMOTE="https://XiaoYouChR:${GITCODE_TOKEN}@gitcode.com/XiaoYouChR/Ghost-Downloader-3.git"
+          REMOTE="https://XiaoYouChR:${GITCODE_TOKEN}@gitcode.com/.git"
           git push "$REMOTE" main "v${VERSION}" 2>&1 | sed "s/${GITCODE_TOKEN}/****/g" || true
 
       - name: Mirror release to GitCode
@@ -1011,7 +1011,7 @@ jobs:
           if [ -z "$GITCODE_TOKEN" ]; then echo "No GITCODE_TOKEN, skipping mirror"; exit 0; fi
 
           API="https://api.gitcode.com/api/v5"
-          REPO="XiaoYouChR/Ghost-Downloader-3"
+          REPO=""
           TAG="v${VERSION}"
           AUTH="access_token=${GITCODE_TOKEN}"
 

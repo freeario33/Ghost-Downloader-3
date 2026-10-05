@@ -1,4 +1,4 @@
-# Ghost Downloader
+# 幽灵下载者
 
 基于 PySide6 的多协议下载器。桌面端（Windows、macOS、Linux）和 Android 共享同一业务引擎，浏览器扩展捕获资源并发送到应用。
 
@@ -84,16 +84,16 @@ _Avoid_: pending task、unconfirmed task
 _Avoid_: 与泛义"资源"混淆
 
 **Scheme Association**:
-让系统把某个链接协议（magnet、ed2k、ftp 等）交给 Ghost Downloader 打开。协议由 FeaturePack 声明。
+让系统把某个链接协议（magnet、ed2k、ftp 等）交给 幽灵下载者 打开。协议由 FeaturePack 声明。
 Windows、Linux 在运行时注册、用户可开关；macOS、Android 在安装时声明、常驻，只进入"打开方式"候选，不抢默认程序。
 _Avoid_: URL 注册、协议注册
 
 **File Association**:
-让系统把某类本地文件（.torrent、.m3u8 等）交给 Ghost Downloader 打开，进入任务创建流程。文件类型由 FeaturePack 声明；平台差异同 Scheme Association。
+让系统把某类本地文件（.torrent、.m3u8 等）交给 幽灵下载者 打开，进入任务创建流程。文件类型由 FeaturePack 声明；平台差异同 Scheme Association。
 _Avoid_: 文件注册
 
 **Wake Link**:
-浏览器扩展拉起 Ghost Downloader 的 `ghostdownloader://` 链接。launch 打开界面；wake 只让 Browser Service、Aria2 RPC Service 和任务运行起来，不打断用户。
+浏览器扩展拉起 幽灵下载者 的 `ghostdownloader://` 链接。launch 打开界面；wake 只让 Browser Service、Aria2 RPC Service 和任务运行起来，不打断用户。
 _Avoid_: URL Scheme（会和 Scheme Association 混淆）
 
 ### 任务执行
@@ -215,8 +215,8 @@ _Avoid_: options（options 是每个 Task 的输入，不是应用配置）
 _Avoid_: install dir、program folder
 
 **Portable Folder**:
-App Dir 内名为 `GhostDownloader` 的目录。Portable 模式下数据住在这里。
-_Avoid_: 单独说 GhostDownloader 文件夹
+App Dir 内名为 `幽灵下载者` 的目录。Portable 模式下数据住在这里。
+_Avoid_: 单独说 幽灵下载者 文件夹
 
 **Seed Features**:
 App Dir 内 `features/` 目录。只读的出厂默认 Pack 集合，运行时不修改。

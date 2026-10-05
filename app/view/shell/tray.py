@@ -169,7 +169,7 @@ else:
 
 
 class SystemTrayIcon(QSystemTrayIcon):
-    NAME = "Ghost Downloader"
+    NAME = "幽灵下载者"
 
     def __init__(self, taskService, speedMeter, icon: QIcon, parent=None):
         super().__init__(icon, parent)

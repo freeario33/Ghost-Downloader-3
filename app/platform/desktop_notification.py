@@ -31,7 +31,7 @@ async def init(submit) -> None:
             f.write(QResource(":/image/logo.png").data())
 
     global notifier
-    notifier = DN(app_name="Ghost Downloader", app_icon=Icon(path=iconPath))
+    notifier = DN(app_name="幽灵下载者", app_icon=Icon(path=iconPath))
 
 
 def notifyDiskSpaceInsufficient(free: int, needed: int) -> None:

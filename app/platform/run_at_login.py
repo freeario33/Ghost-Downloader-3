@@ -25,10 +25,10 @@ def _setWindows(enabled: bool) -> None:
         0, winreg.KEY_WRITE,
     )
     if enabled:
-        winreg.SetValueEx(key, "GhostDownloader", 0, winreg.REG_SZ, f'"{EXECUTABLE_PATH}" --silence')
+        winreg.SetValueEx(key, "幽灵下载者", 0, winreg.REG_SZ, f'"{EXECUTABLE_PATH}" --silence')
     else:
         try:
-            winreg.DeleteValue(key, "GhostDownloader")
+            winreg.DeleteValue(key, "幽灵下载者")
         except FileNotFoundError:
             pass
     winreg.CloseKey(key)
@@ -68,7 +68,7 @@ def _setLinux(enabled: bool) -> None:
             "[Desktop Entry]\n"
             "Type=Application\n"
             f"Version={VERSION}\n"
-            "Name=Ghost Downloader 3\n"
+            "Name=幽灵下载者 3\n"
             "Comment=A multi-threading downloader with QThread based on PySide6\n"
             f'Exec="{EXECUTABLE_PATH}" --silence\n'
             "StartupNotify=false\n"

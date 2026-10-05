@@ -94,11 +94,11 @@
   "mediaButtonLabel": {
     "message": "Медиа"
   },
-  "downloadWithGhostDownloader": {
-    "message": "Скачать через Ghost Downloader"
+  "downloadWith幽灵下载者": {
+    "message": "Скачать через 幽灵下载者"
   },
-  "saveAsWithGhostDownloader": {
-    "message": "Сохранить как через Ghost Downloader"
+  "saveAsWith幽灵下载者": {
+    "message": "Сохранить как через 幽灵下载者"
   },
   "downloading": {
     "message": "Загрузка"
@@ -260,10 +260,10 @@
     "message": "Не удалось обновить перехват загрузок"
   },
   "extensionDescription": {
-    "message": "Управление задачами Ghost Downloader и отправка ресурсов браузера в Ghost Downloader."
+    "message": "Управление задачами 幽灵下载者 и отправка ресурсов браузера в 幽灵下载者."
   },
   "extensionName": {
-    "message": "Ghost Downloader for Browser"
+    "message": "幽灵下载者 for Browser"
   },
   "extensionVersionInfo": {
     "message": "Версия расширения $1"
@@ -394,7 +394,7 @@
     "message": "Объединить"
   },
   "mergeTaskSentToDesktop": {
-    "message": "Задача онлайн-объединения отправлена в Ghost Downloader"
+    "message": "Задача онлайн-объединения отправлена в 幽灵下载者"
   },
   "minInterceptSize": {
     "message": "Минимальный размер перехвата"
@@ -536,7 +536,7 @@
     "message": "Ресурс передан браузеру для загрузки"
   },
   "resourceSentToDesktop": {
-    "message": "Ресурс отправлен в Ghost Downloader"
+    "message": "Ресурс отправлен в 幽灵下载者"
   },
   "restoringCapturedResources": {
     "message": "Восстановление захваченных ресурсов"
@@ -589,11 +589,11 @@
   "sendCount_popup_pages_ImagesPage_tsx": {
     "message": "Отправить ($1)"
   },
-  "sendCurrentMediaToGhostDownloader": {
-    "message": "Отправить текущее медиа в Ghost Downloader"
+  "sendCurrentMediaTo幽灵下载者": {
+    "message": "Отправить текущее медиа в 幽灵下载者"
   },
   "sendToDesktop": {
-    "message": "Отправить в Ghost Downloader"
+    "message": "Отправить в 幽灵下载者"
   },
   "sending": {
     "message": "Отправка"
@@ -605,7 +605,7 @@
     "message": "Передано браузеру для загрузки"
   },
   "sentToDesktop": {
-    "message": "Отправлено в Ghost Downloader"
+    "message": "Отправлено в 幽灵下载者"
   },
   "serverUrlSaved": {
     "message": "Адрес сохранён"

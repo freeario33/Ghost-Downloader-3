@@ -20,14 +20,14 @@ EXECUTABLE_DIR = (
 )
 
 APP_DATA_DIR = (
-    EXECUTABLE_DIR / "GhostDownloader"
-    if (EXECUTABLE_DIR / "GhostDownloader").is_dir()
+    EXECUTABLE_DIR / "幽灵下载者"
+    if (EXECUTABLE_DIR / "幽灵下载者").is_dir()
     else Path(QStandardPaths.writableLocation(
         QStandardPaths.StandardLocation.GenericDataLocation
-    )) / "GhostDownloader"
+    )) / "幽灵下载者"
 )
 
-PORTABLE_DIR = EXECUTABLE_DIR / "GhostDownloader"
+PORTABLE_DIR = EXECUTABLE_DIR / "幽灵下载者"
 
 SEED_FEATURES_DIR = EXECUTABLE_DIR / "features"
 FEATURES_DIR = (
@@ -37,7 +37,7 @@ FEATURES_DIR = (
 )
 USER_DATA_DIR = Path(QStandardPaths.writableLocation(
     QStandardPaths.StandardLocation.GenericDataLocation
-)) / "GhostDownloader"
+)) / "幽灵下载者"
 
 DOWNLOAD_DIR = Path(QStandardPaths.writableLocation(
     QStandardPaths.StandardLocation.DownloadLocation

@@ -94,11 +94,11 @@
   "mediaButtonLabel": {
     "message": "Mídia"
   },
-  "downloadWithGhostDownloader": {
-    "message": "Baixar com Ghost Downloader"
+  "downloadWith幽灵下载者": {
+    "message": "Baixar com 幽灵下载者"
   },
-  "saveAsWithGhostDownloader": {
-    "message": "Salvar como com Ghost Downloader"
+  "saveAsWith幽灵下载者": {
+    "message": "Salvar como com 幽灵下载者"
   },
   "downloading": {
     "message": "Baixando"
@@ -260,10 +260,10 @@
     "message": "Falha ao atualizar assunção de downloads"
   },
   "extensionDescription": {
-    "message": "Gerencie tarefas do Ghost Downloader e envie recursos do navegador para o Ghost Downloader."
+    "message": "Gerencie tarefas do 幽灵下载者 e envie recursos do navegador para o 幽灵下载者."
   },
   "extensionName": {
-    "message": "Ghost Downloader for Browser"
+    "message": "幽灵下载者 for Browser"
   },
   "extensionVersionInfo": {
     "message": "Versão da extensão $1"
@@ -394,7 +394,7 @@
     "message": "Mesclar"
   },
   "mergeTaskSentToDesktop": {
-    "message": "Tarefa de mesclagem online enviada para Ghost Downloader"
+    "message": "Tarefa de mesclagem online enviada para 幽灵下载者"
   },
   "minInterceptSize": {
     "message": "Tamanho mínimo para interceptação"
@@ -536,7 +536,7 @@
     "message": "Recurso enviado ao navegador para download"
   },
   "resourceSentToDesktop": {
-    "message": "Recurso enviado para Ghost Downloader"
+    "message": "Recurso enviado para 幽灵下载者"
   },
   "restoringCapturedResources": {
     "message": "Restaurando recursos capturados"
@@ -589,11 +589,11 @@
   "sendCount_popup_pages_ImagesPage_tsx": {
     "message": "Enviar ($1)"
   },
-  "sendCurrentMediaToGhostDownloader": {
-    "message": "Enviar mídia atual para Ghost Downloader"
+  "sendCurrentMediaTo幽灵下载者": {
+    "message": "Enviar mídia atual para 幽灵下载者"
   },
   "sendToDesktop": {
-    "message": "Enviar para Ghost Downloader"
+    "message": "Enviar para 幽灵下载者"
   },
   "sending": {
     "message": "Enviando"
@@ -605,7 +605,7 @@
     "message": "Enviado ao navegador para download"
   },
   "sentToDesktop": {
-    "message": "Enviado para Ghost Downloader"
+    "message": "Enviado para 幽灵下载者"
   },
   "serverUrlSaved": {
     "message": "Endereço salvo"

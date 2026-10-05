@@ -3,7 +3,7 @@
 </h4>
 
 > [!TIP]
-> Join the Ghost Downloader community on Discord: [discord.gg/fKfhkPumEM](https://discord.gg/fKfhkPumEM)
+> Join the 幽灵下载者 community on Discord: [discord.gg/fKfhkPumEM](https://discord.gg/fKfhkPumEM)
 
 <!-- PROJECT LOGO -->
 <div align="center">
@@ -22,7 +22,7 @@
 [![QQGroup](https://img.shields.io/badge/QQ_Group-756042420-blue.svg?color=blue&style=for-the-badge)](https://qm.qq.com/q/gPk6FR1Hby)
 [![Discord](https://img.shields.io/discord/1527965717973176391?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=%235865F2)](https://discord.gg/fKfhkPumEM)
 
-##### [Documentation](https://gd.xychr.com/en/docs/) · [Report Bug](https://github.com/XiaoYouChR/Ghost-Downloader-3/issues/new?template=bug_report.yml) · [Request Feature](https://github.com/XiaoYouChR/Ghost-Downloader-3/issues/new?template=feature_request.yml)
+##### [Documentation](https://gd.xychr.com/en/docs/) · [Report Bug](/issues/new?template=bug_report.yml) · [Request Feature](/issues/new?template=feature_request.yml)
 
 </div>
 
@@ -64,7 +64,7 @@ Started as a passion project to help a Bilibili creator manage resources. Now it
 - [ ] Make the plugin API public (Feature Packs system is operational, API stabilizing)
 - [ ] Enhanced task editing, such as binding multiple Sessions to one task
 
-Visit [Open issues](https://github.com/XiaoYouChR/Ghost-Downloader-3/issues) to see all requested features (and known issues).
+Visit [Open issues](/issues) to see all requested features (and known issues).
 
 <!-- SPONSOR -->
 ## Sponsor
@@ -89,12 +89,12 @@ If you have a suggestion, fork the repo and create a pull request. You can also 
 
 Thanks to all contributors who have participated in this project!
 
-[![Contributors](http://contrib.nn.ci/api?repo=XiaoYouChR/Ghost-Downloader-3)](https://github.com/XiaoYouChR/Ghost-Downloader-3/graphs/contributors)
+[![Contributors](http://contrib.nn.ci/api?repo=)](/graphs/contributors)
 
 ## Translation Contributors
 
 > [!TIP]
-> If you'd like to help translate Ghost Downloader, welcome to join the Crowdin project: [ghost-downloader](https://crowdin.com/project/ghost-downloader)
+> If you'd like to help translate 幽灵下载者, welcome to join the Crowdin project: [ghost-downloader](https://crowdin.com/project/ghost-downloader)
 
 <!-- CROWDIN-CONTRIBUTORS-START -->
 <table>
@@ -144,7 +144,7 @@ Copyright © 2024-2026 XiaoYouChR.
 ## Contact
 
 > [!IMPORTANT]
-> Welcome to join the Ghost Downloader user group: [756042420](https://qm.qq.com/q/gPk6FR1Hby)
+> Welcome to join the 幽灵下载者 user group: [756042420](https://qm.qq.com/q/gPk6FR1Hby)
 
 * [E-mail](mailto:XiaoYouChR@qq.com) - XiaoYouChR@qq.com
 
@@ -155,12 +155,12 @@ Copyright © 2024-2026 XiaoYouChR.
 * [cat-catch](https://github.com/xifangczy/cat-catch) Browser Resource Sniffing Extension
 * [desktop-notifier](https://github.com/samschott/desktop-notifier) Python library for cross-platform desktop notifications
 * [FFmpeg](https://ffmpeg.org/) A complete, cross-platform solution to record, convert and stream audio and video
-* [Kelpie](https://github.com/XiaoYouChR/Kelpie) The eD2k download engine behind Ghost Downloader's eD2k support
+* [Kelpie](https://github.com/XiaoYouChR/Kelpie) The eD2k download engine behind 幽灵下载者's eD2k support
 * [libtorrent](https://github.com/arvidn/libtorrent) An efficient feature complete C++ bittorrent implementation
 * [loguru](https://github.com/Delgan/loguru) A library which aims to bring enjoyable logging in Python
 * [m3u8](https://github.com/globocom/m3u8) Python m3u8 parser
 * [mpegdash](https://github.com/sangoma/mpegdash) MPEG-DASH MPD parser
-* [N_m3u8DL-RE](https://github.com/nilaoda/N_m3u8DL-RE) Cross-platform DASH/HLS/MSS download tool powering Ghost Downloader's M3U8 support
+* [N_m3u8DL-RE](https://github.com/nilaoda/N_m3u8DL-RE) Cross-platform DASH/HLS/MSS download tool powering 幽灵下载者's M3U8 support
 * [Nuitka](https://github.com/Nuitka/Nuitka) The Python compiler
 * [PyQt-Fluent-Widgets](https://github.com/zhiyiYo/PyQt-Fluent-Widgets) Powerful, extensible, and elegant Fluent Design-style widget library
 * [PySide6](https://github.com/PySide/pyside-setup) The official Python module
@@ -179,20 +179,20 @@ Copyright © 2024-2026 XiaoYouChR.
 
 <a href="https://www.star-history.com/?repos=XiaoYouChR%2FGhost-Downloader-3&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=XiaoYouChR/Ghost-Downloader-3&type=date&theme=dark&legend=top-left&sealed_token=LFoHRo2s05TZoUPnYwYLjvXVdryi_dHus9oWAnLyuW3tytG-ZJ3cYCralCBqELLNt2yNjh53BVMVdHK2tiwQo9xJZIEIFC46B1sQc8ltFG3qOPVdV1Q2mTLijg4hnxQVSKGKGEgHEV8nrIHdcup8Y2wegyyuFkhoJfA2k9ZDaYorFXAOt-t57jGPBSTk" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=XiaoYouChR/Ghost-Downloader-3&type=date&legend=top-left&sealed_token=LFoHRo2s05TZoUPnYwYLjvXVdryi_dHus9oWAnLyuW3tytG-ZJ3cYCralCBqELLNt2yNjh53BVMVdHK2tiwQo9xJZIEIFC46B1sQc8ltFG3qOPVdV1Q2mTLijg4hnxQVSKGKGEgHEV8nrIHdcup8Y2wegyyuFkhoJfA2k9ZDaYorFXAOt-t57jGPBSTk" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=XiaoYouChR/Ghost-Downloader-3&type=date&legend=top-left&sealed_token=LFoHRo2s05TZoUPnYwYLjvXVdryi_dHus9oWAnLyuW3tytG-ZJ3cYCralCBqELLNt2yNjh53BVMVdHK2tiwQo9xJZIEIFC46B1sQc8ltFG3qOPVdV1Q2mTLijg4hnxQVSKGKGEgHEV8nrIHdcup8Y2wegyyuFkhoJfA2k9ZDaYorFXAOt-t57jGPBSTk" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=&type=date&theme=dark&legend=top-left&sealed_token=LFoHRo2s05TZoUPnYwYLjvXVdryi_dHus9oWAnLyuW3tytG-ZJ3cYCralCBqELLNt2yNjh53BVMVdHK2tiwQo9xJZIEIFC46B1sQc8ltFG3qOPVdV1Q2mTLijg4hnxQVSKGKGEgHEV8nrIHdcup8Y2wegyyuFkhoJfA2k9ZDaYorFXAOt-t57jGPBSTk" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=&type=date&legend=top-left&sealed_token=LFoHRo2s05TZoUPnYwYLjvXVdryi_dHus9oWAnLyuW3tytG-ZJ3cYCralCBqELLNt2yNjh53BVMVdHK2tiwQo9xJZIEIFC46B1sQc8ltFG3qOPVdV1Q2mTLijg4hnxQVSKGKGEgHEV8nrIHdcup8Y2wegyyuFkhoJfA2k9ZDaYorFXAOt-t57jGPBSTk" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=&type=date&legend=top-left&sealed_token=LFoHRo2s05TZoUPnYwYLjvXVdryi_dHus9oWAnLyuW3tytG-ZJ3cYCralCBqELLNt2yNjh53BVMVdHK2tiwQo9xJZIEIFC46B1sQc8ltFG3qOPVdV1Q2mTLijg4hnxQVSKGKGEgHEV8nrIHdcup8Y2wegyyuFkhoJfA2k9ZDaYorFXAOt-t57jGPBSTk" />
  </picture>
 </a>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[forks-shield]: https://img.shields.io/github/forks/XiaoYouChR/Ghost-Downloader-3.svg?style=for-the-badge
-[forks-url]: https://github.com/XiaoYouChR/Ghost-Downloader-3/network/members
-[stars-shield]: https://img.shields.io/github/stars/XiaoYouChR/Ghost-Downloader-3.svg?style=for-the-badge
-[stars-url]: https://github.com/XiaoYouChR/Ghost-Downloader-3/stargazers
-[issues-shield]: https://img.shields.io/github/issues/XiaoYouChR/Ghost-Downloader-3.svg?style=for-the-badge
-[issues-url]: https://github.com/XiaoYouChR/Ghost-Downloader-3/issues
-[release-shield]: https://img.shields.io/github/v/release/XiaoYouChR/Ghost-Downloader-3?style=for-the-badge
-[release-url]: https://github.com/XiaoYouChR/Ghost-Downloader-3/releases/latest
-[downloads-shield]: https://img.shields.io/github/downloads/XiaoYouChR/Ghost-Downloader-3/total?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/.svg?style=for-the-badge
+[forks-url]: /network/members
+[stars-shield]: https://img.shields.io/github/stars/.svg?style=for-the-badge
+[stars-url]: /stargazers
+[issues-shield]: https://img.shields.io/github/issues/.svg?style=for-the-badge
+[issues-url]: /issues
+[release-shield]: https://img.shields.io/github/v/release/?style=for-the-badge
+[release-url]: /releases/latest
+[downloads-shield]: https://img.shields.io/github/downloads//total?style=for-the-badge

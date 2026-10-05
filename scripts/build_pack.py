@@ -17,7 +17,6 @@ REPO = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO / "features"
 DIST_PACKS = REPO / "dist" / "packs"
 VERSIONS_FILE = REPO / "versions.json"
-EXCLUDED_PACKS = {"jack_yao"}
 IGNORE_SUFFIXES = {".svg", ".qrc", ".pyc"}
 
 
@@ -60,7 +59,7 @@ def readManifest(packId: str) -> dict:
 def allPackIds() -> list[str]:
     return [
         d.name for d in sorted(FEATURES_DIR.iterdir())
-        if d.is_dir() and d.name not in EXCLUDED_PACKS and (d / "manifest.toml").is_file()
+        if d.is_dir() and (d / "manifest.toml").is_file()
     ]
 
 

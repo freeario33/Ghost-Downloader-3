@@ -10,7 +10,7 @@
 
 | 项目 | 值 |
 |---|---|
-| 仓库 | https://github.com/XiaoYouChR/Ghost-Downloader-3 |
+| 仓库 |  |
 | remote | 仅 `upstream`（指向上述官方仓库），**无 fork** |
 | 本地分支 | `main`（跟踪上游，只拉更新）、`dev`（二次开发） |
 | 当前工作分支 | `dev` |
@@ -134,6 +134,6 @@ git config --local --unset https.proxy
 
 ## 六、已知环境限制
 
-- 程序启动时会向 `~/.local/share/GhostDownloader/` 写日志与配置。在受限沙箱中该路径不可写，会以 `OSError: [Errno 30] Read-only file system` 中止。这是**沙箱限制**，不是程序缺陷；在正常桌面环境下可写，程序可正常启动。
+- 程序启动时会向 `~/.local/share/幽灵下载者/` 写日志与配置。在受限沙箱中该路径不可写，会以 `OSError: [Errno 30] Read-only file system` 中止。这是**沙箱限制**，不是程序缺陷；在正常桌面环境下可写，程序可正常启动。
 - Qt 6.6+ 不再支持缺少 AVX 指令集的 CPU。
 - Kali 为滚动发行版，Qt/glibc 版本较新，实测与项目要求（glibc ≥ 2.35）兼容。

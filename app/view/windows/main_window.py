@@ -131,7 +131,7 @@ class MainWindow(MSFluentWindow):
 
     def _initWidget(self) -> None:
         self.setWindowIcon(QIcon(":/image/logo.png"))
-        self.setWindowTitle("Ghost Downloader")
+        self.setWindowTitle("幽灵下载者")
         self.setMinimumSize(960, 540)
         if sys.platform == "win32":
             self._refreshBackgroundEffect()
@@ -292,7 +292,7 @@ class MainWindow(MSFluentWindow):
 
     def onPairRequested(self, request: PairRequest) -> None:
         content = self.tr(
-            "浏览器扩展正在请求连接到 Ghost Downloader。\n\n"
+            "浏览器扩展正在请求连接到 幽灵下载者。\n\n"
             "来源: {0}\n客户端: {1}\n扩展版本: {2}\n\n"
             "仅在你刚刚点击扩展里的\"自动配对\"时允许。"
         ).format(request.peerAddress, request.clientKind or self.tr("浏览器扩展"),
@@ -436,7 +436,7 @@ class MainWindow(MSFluentWindow):
             QDesktopServices.openUrl(QUrl(FEEDBACK_URL))
 
     def _openLogFolder(self) -> None:
-        revealInFolder(f"{APP_DATA_DIR}/GhostDownloader.log")
+        revealInFolder(f"{APP_DATA_DIR}/幽灵下载者.log")
 
     def _onCloseClicked(self) -> None:
         for dialog in self.findChildren(MaskDialogBase):

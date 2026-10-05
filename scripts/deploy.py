@@ -18,8 +18,6 @@ MACOS_DOCUMENT_TYPES = [
     {"name": "DASH 清单", "extensions": ["mpd"], "icon": "m3u8"},
 ]
 
-EXCLUDED_PACKS = {"jack_yao"}
-
 EXTRA_INCLUDE_PACKAGES = []
 PLATFORM_INCLUDE_PACKAGES = {
     "win32": ["winrt"],
@@ -142,10 +140,10 @@ def buildArgs() -> list[str]:
             '--windows-icon-from-ico=app/assets/logo.ico',
             '--include-data-dir=app/assets/file_icons=app/assets/file_icons',
             '--company-name=XiaoYouChR',
-            '--product-name="Ghost Downloader"',
+            '--product-name="幽灵下载者"',
             f'--file-version={BUILD_VERSION}',
             f'--product-version={BUILD_VERSION}',
-            '--file-description="Ghost Downloader"',
+            '--file-description="幽灵下载者"',
             f'--copyright="Copyright(C) {YEAR} {AUTHOR}"',
             '--output-dir=dist',
             'Ghost-Downloader-3.py',
@@ -195,7 +193,6 @@ def findPacks() -> list[Path]:
             item
             for item in featuresDir.iterdir()
             if item.is_dir()
-            and item.name not in EXCLUDED_PACKS
             and (item / "manifest.toml").is_file()
         ),
         key=lambda item: item.name,
@@ -250,7 +247,7 @@ def patchInfoPlist() -> None:
         plist = plistlib.load(f)
     plist["CFBundleDocumentTypes"] = documentTypes
     plist["CFBundleIdentifier"] = DESKTOP_ID
-    plist["NSDownloadsFolderUsageDescription"] = "Ghost Downloader 需要访问下载文件夹以管理和删除下载的文件。"
+    plist["NSDownloadsFolderUsageDescription"] = "幽灵下载者 需要访问下载文件夹以管理和删除下载的文件。"
     plist["CFBundleURLTypes"] = [{
         "CFBundleURLName": DESKTOP_ID,
         "CFBundleURLSchemes": ["ghostdownloader", "magnet", "ed2k", "ftp", "ftps"],

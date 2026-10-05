@@ -277,7 +277,7 @@ class WelcomePage(QWidget):
         self.iconLabel.setPixmap(QIcon(":/image/logo.png").pixmap(88, 88))
         self.iconLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.titleLabel = TitleLabel(self.tr("欢迎使用 Ghost Downloader"), self)
+        self.titleLabel = TitleLabel(self.tr("欢迎使用 幽灵下载者"), self)
         self.titleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.subtitleLabel = BodyLabel(
@@ -411,7 +411,7 @@ class BrowserExtensionPage(QWidget):
     def _initWidget(self) -> None:
         self.header = PageHeader(
             self.tr("安装浏览器扩展"),
-            self.tr("让浏览器中的下载自动接管到 Ghost Downloader"), self,
+            self.tr("让浏览器中的下载自动接管到 幽灵下载者"), self,
         )
 
         self.previewLabel = QLabel(self)
@@ -673,12 +673,12 @@ class AdvancedOptionsPage(QWidget):
         if sys.platform != "darwin":
             self.fileAssocCard = OptionCard(
                 FluentIcon.DOCUMENT, self.tr("关联文件类型"),
-                self.tr("双击 .torrent 等文件时用 Ghost Downloader 打开"),
+                self.tr("双击 .torrent 等文件时用 幽灵下载者 打开"),
                 isChecked=self._featureService.isFileAssociationEnabled(), parent=self,
             )
             self.uriSchemeCard = OptionCard(
                 FluentIcon.LINK, self.tr("处理协议链接"),
-                self.tr("点击 Magnet/eD2k/FTP 链接时唤起 Ghost Downloader"),
+                self.tr("点击 Magnet/eD2k/FTP 链接时唤起 幽灵下载者"),
                 isChecked=self._featureService.isUriSchemeAssociationEnabled(), parent=self,
             )
             self.urlSchemeCard = OptionCard(
@@ -692,7 +692,7 @@ class AdvancedOptionsPage(QWidget):
             self.urlSchemeCard = None
         self.aria2Card = OptionCard(
             FluentIcon.COMMAND_PROMPT, self.tr("Aria2 RPC 兼容"),
-            self.tr("让支持 Aria2 的工具和网站把下载任务发给 Ghost Downloader"),
+            self.tr("让支持 Aria2 的工具和网站把下载任务发给 幽灵下载者"),
             isChecked=cfg.isAria2RpcEnabled.value, parent=self,
         )
 
@@ -756,7 +756,7 @@ class CompletePage(QWidget):
         self.titleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.descLabel = BodyLabel(
-            self.tr("Ghost Downloader 已准备好为你工作。\n你可以随时在设置中调整所有选项。"),
+            self.tr("幽灵下载者 已准备好为你工作。\n你可以随时在设置中调整所有选项。"),
             self,
         )
         self.descLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -806,7 +806,7 @@ class OobeWindow(FluentWidget):
 
     def _initWidget(self) -> None:
         self.setTitleBar(MSFluentTitleBar(self))
-        self.setWindowTitle("Ghost Downloader")
+        self.setWindowTitle("幽灵下载者")
         self.setWindowIcon(QIcon(":/image/logo.png"))
         self.titleBar.hBoxLayout.insertSpacing(2, 6)
         if sys.platform == "darwin":

@@ -1,5 +1,5 @@
 /*
- * Ghost Downloader — MSE attribution probe (MAIN world).
+ * 幽灵下载者 — MSE attribution probe (MAIN world).
  * Proxy layout derived from cat-catch (catch-script/catch.js); upstream is GPL-3.0.
  * We post tagged, typed signals to the ISOLATED-world attribution engine instead of
  * capturing buffers. Built as a standalone IIFE bundle (see scripts/build.mjs).
@@ -14,7 +14,7 @@ declare global {
 
 type GhostXMLHttpRequest = XMLHttpRequest & { __gdUrl?: string };
 
-(function installGhostDownloaderMseAttribution() {
+(function install幽灵下载者MseAttribution() {
   if (window.__gdMseAttributionInstalled) { return; }
   window.__gdMseAttributionInstalled = true;
 

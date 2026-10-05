@@ -1,8 +1,8 @@
-# Contributing to Ghost Downloader
+# Contributing to 幽灵下载者
 
 ## AI 工具使用政策
 
-Ghost Downloader 欢迎使用 AI 工具辅助开发，但请在提交 PR 时如实声明。
+幽灵下载者 欢迎使用 AI 工具辅助开发，但请在提交 PR 时如实声明。
 
 ### 为什么？
 
@@ -35,7 +35,7 @@ Ghost Downloader 欢迎使用 AI 工具辅助开发，但请在提交 PR 时如�
 
 ## AI Tool Usage Policy
 
-Ghost Downloader welcomes the use of AI tools in development, but please disclose AI usage when submitting a PR.
+幽灵下载者 welcomes the use of AI tools in development, but please disclose AI usage when submitting a PR.
 
 ### Why?
 
