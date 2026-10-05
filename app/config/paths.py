@@ -19,15 +19,25 @@ EXECUTABLE_DIR = (
     else Path(".")
 )
 
-APP_DATA_DIR = (
-    EXECUTABLE_DIR / "幽灵下载者"
-    if (EXECUTABLE_DIR / "幽灵下载者").is_dir()
-    else Path(QStandardPaths.writableLocation(
-        QStandardPaths.StandardLocation.GenericDataLocation
-    )) / "幽灵下载者"
-)
-
 PORTABLE_DIR = EXECUTABLE_DIR / "幽灵下载者"
+USER_DATA_DIR = Path(QStandardPaths.writableLocation(
+    QStandardPaths.StandardLocation.GenericDataLocation
+)) / "幽灵下载者"
+
+
+def canWriteFolder(folder: Path) -> bool:
+    """程序位于只读位置（Program Files、AppImage 挂载点）时无法写入，必须回落。"""
+    try:
+        folder.mkdir(parents=True, exist_ok=True)
+        probe = folder / ".write_probe"
+        probe.touch()
+        probe.unlink()
+        return True
+    except OSError:
+        return False
+
+
+APP_DATA_DIR = PORTABLE_DIR if canWriteFolder(PORTABLE_DIR) else USER_DATA_DIR
 
 SEED_FEATURES_DIR = EXECUTABLE_DIR / "features"
 FEATURES_DIR = (
@@ -35,9 +45,6 @@ FEATURES_DIR = (
     if "__compiled__" not in globals()
     else APP_DATA_DIR / "features"
 )
-USER_DATA_DIR = Path(QStandardPaths.writableLocation(
-    QStandardPaths.StandardLocation.GenericDataLocation
-)) / "幽灵下载者"
 
 DOWNLOAD_DIR = Path(QStandardPaths.writableLocation(
     QStandardPaths.StandardLocation.DownloadLocation
