@@ -267,10 +267,10 @@ class MainWindow(MSFluentWindow):
             QShortcut(QKeySequence.StandardKey.Close, self).activated.connect(self._onCloseClicked)
 
 
-    def addUrls(self, urls: list[str], nameByUrl: dict[str, str] | None = None, subfolderByUrl: dict[str, str] | None = None, keyByUrl: dict[str, str] | None = None) -> None:
+    def addUrls(self, urls: list[str], nameByUrl: dict[str, str] | None = None, subfolderByUrl: dict[str, str] | None = None, keyByUrl: dict[str, str] | None = None, folderByUrl: dict[str, str] | None = None) -> None:
         dialog = self._draftDialog
         if urls:
-            dialog.addUrls(urls, nameByUrl, subfolderByUrl, keyByUrl)
+            dialog.addUrls(urls, nameByUrl, subfolderByUrl, keyByUrl, folderByUrl)
         if not dialog.isVisible():
             dialog.showMask()
 
@@ -513,15 +513,16 @@ class MainWindow(MSFluentWindow):
             urls = [line.strip() for line in mime.text().splitlines()
                     if line.strip() and self._featureService.match(line.strip())]
         if urls:
-            expanded, nameByUrl, subfolderByUrl, keyByUrl = self._expandLinkListFiles(urls)
+            expanded, nameByUrl, subfolderByUrl, keyByUrl, folderByUrl = self._expandLinkListFiles(urls)
             if any(localFilePath(url, {".txt"}) is not None for url in urls):
-                self._addUrlsDirect(expanded, nameByUrl, subfolderByUrl, keyByUrl)
+                self._addUrlsDirect(expanded, nameByUrl, subfolderByUrl, keyByUrl, folderByUrl)
             else:
-                self.addUrls(expanded, nameByUrl, subfolderByUrl, keyByUrl)
+                self.addUrls(expanded, nameByUrl, subfolderByUrl, keyByUrl, folderByUrl)
 
     def _addUrlsDirect(self, urls: list[str], nameByUrl: dict[str, str] | None = None,
                       subfolderByUrl: dict[str, str] | None = None,
-                      keyByUrl: dict[str, str] | None = None) -> None:
+                      keyByUrl: dict[str, str] | None = None,
+                      folderByUrl: dict[str, str] | None = None) -> None:
         draft = self._directDraft
         draft.clear()
         if nameByUrl:
@@ -530,6 +531,8 @@ class MainWindow(MSFluentWindow):
             draft.setSubfolderForUrl(subfolderByUrl)
         if keyByUrl:
             draft.setKeyForUrl(keyByUrl)
+        if folderByUrl:
+            draft.setFolderForUrl(folderByUrl)
         draft.setUrls(urls)
         draft.confirm(autoStart=False)
 
@@ -545,11 +548,12 @@ class MainWindow(MSFluentWindow):
             parent=self,
         ).show()
 
-    def _expandLinkListFiles(self, urls: list[str]) -> tuple[list[str], dict[str, str], dict[str, str], dict[str, str]]:
+    def _expandLinkListFiles(self, urls: list[str]) -> tuple[list[str], dict[str, str], dict[str, str], dict[str, str], dict[str, str]]:
         expanded: list[str] = []
         nameByUrl: dict[str, str] = {}
         subfolderByUrl: dict[str, str] = {}
         keyByUrl: dict[str, str] = {}
+        folderByUrl: dict[str, str] = {}
         for url in urls:
             path = localFilePath(url, {".txt"})
             if path is None:
@@ -563,9 +567,11 @@ class MainWindow(MSFluentWindow):
                         nameByUrl[entry.url] = entry.name
                     if entry.key:
                         keyByUrl[entry.url] = entry.key
+                    if entry.folder:
+                        folderByUrl[entry.url] = entry.folder
                     if subfolder:
                         subfolderByUrl[entry.url] = subfolder
-        return expanded, nameByUrl, subfolderByUrl, keyByUrl
+        return expanded, nameByUrl, subfolderByUrl, keyByUrl, folderByUrl
 
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)

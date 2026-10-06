@@ -44,6 +44,7 @@ class TaskDraft:
         self._nameByUrl: dict[str, str] = {}
         self._subfolderByUrl: dict[str, str] = {}
         self._keyByUrl: dict[str, str] = {}
+        self._folderByUrl: dict[str, str] = {}
 
     def urls(self) -> list[str]:
         return [item.url for item in self._items]
@@ -98,6 +99,14 @@ class TaskDraft:
         for item in self._items:
             key = self._keyByUrl.get(item.url, "")
             if key and item.task is not None:
+                item.task.setOptions(self._buildOptions(item))
+        self.itemsChanged.emit()
+
+    def setFolderForUrl(self, folderByUrl: dict[str, str]) -> None:
+        self._folderByUrl = dict(folderByUrl)
+        for item in self._items:
+            folder = self._folderByUrl.get(item.url, "")
+            if folder and item.task is not None:
                 item.task.setOptions(self._buildOptions(item))
         self.itemsChanged.emit()
 
@@ -239,9 +248,14 @@ class TaskDraft:
         if item.categoryOverride is not None:
             options["category"] = item.categoryOverride
         subfolder = self._subfolderByUrl.get(item.url, "")
-        if subfolder:
-            base = options.get("outputFolder") or cfg.downloadFolder.value
-            options["outputFolder"] = Path(base) / subfolder
+        folder = self._folderByUrl.get(item.url, "")
+        if subfolder or folder:
+            base = Path(options.get("outputFolder") or cfg.downloadFolder.value)
+            if subfolder:
+                base = base / subfolder
+            if folder:
+                base = base / folder
+            options["outputFolder"] = base
         key = self._keyByUrl.get(item.url, "")
         if key:
             options["hlsKey"] = key

@@ -34,3 +34,31 @@ class TestParseLinkList:
     def test_strips_whitespace_around_name(self):
         entries = parseLinkList("  影片 ,https://example.com/a.mp4")
         assert entries == [LinkListEntry("影片", "https://example.com/a.mp4")]
+
+    def test_parses_key_and_folder(self):
+        entries = parseLinkList("影片,https://example.com/a.m3u8,secret,S01")
+        assert entries == [LinkListEntry("影片", "https://example.com/a.m3u8", "secret", "S01")]
+
+    def test_parses_empty_key_with_folder(self):
+        entries = parseLinkList("影片,https://example.com/a.mp4,,2024")
+        assert entries == [LinkListEntry("影片", "https://example.com/a.mp4", "", "2024")]
+
+    def test_parses_key_with_empty_folder(self):
+        entries = parseLinkList("影片,https://example.com/a.m3u8,secret,")
+        assert entries == [LinkListEntry("影片", "https://example.com/a.m3u8", "secret", "")]
+
+    def test_empty_key_and_folder_equals_two_segments(self):
+        entries = parseLinkList("影片,https://example.com/a.mp4,,")
+        assert entries == [LinkListEntry("影片", "https://example.com/a.mp4")]
+
+    def test_three_segments_third_is_key_not_folder(self):
+        entries = parseLinkList("影片,https://example.com/a.mp4,电影")
+        assert entries == [LinkListEntry("影片", "https://example.com/a.mp4", "电影", "")]
+
+    def test_skips_five_segments(self):
+        entries = parseLinkList("影片,https://example.com/a.mp4,k,f,extra")
+        assert entries == []
+
+    def test_skips_invalid_url(self):
+        entries = parseLinkList("影片,not-a-url")
+        assert entries == []

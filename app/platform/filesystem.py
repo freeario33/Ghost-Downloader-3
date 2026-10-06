@@ -98,8 +98,7 @@ def localFilePath(url: str, validSuffixes: set[str] | None = None) -> Path | Non
     return path
 
 
-LINK_LIST_LINE_PATTERN = re.compile(r"^(?P<name>.*?),(?P<url>\w+://\S+)$")
-LINK_LIST_LINE_KEY_PATTERN = re.compile(r"^(?P<name>.*?),(?P<url>\w+://\S+?),(?P<key>\S+)$")
+LINK_LIST_URL_PATTERN = re.compile(r"^\w+://\S+$")
 
 
 @dataclass(frozen=True)
@@ -107,25 +106,29 @@ class LinkListEntry:
     name: str
     url: str
     key: str = ""
+    folder: str = ""
 
 
 def parseLinkList(text: str) -> list[LinkListEntry]:
-    """Parse lines of `name,url` or `name,url,key` into entries. Lines without a
-    comma-separated URL are skipped; the key segment is optional."""
+    """Parse lines of `name,url[,key[,folder]]` into entries.
+
+    Segments are positional: segment 1 is the name, segment 2 must be a URL
+    (`scheme://...`), segment 3 is the key, segment 4 is the folder. Key and
+    folder are optional and may each be empty; an empty segment is treated as
+    absent, and trailing empty segments are ignored. Lines with fewer than two
+    segments, an invalid URL, or more than four segments are skipped.
+    """
     links: list[LinkListEntry] = []
     for line in text.splitlines():
-        stripped = line.strip()
-        match = LINK_LIST_LINE_KEY_PATTERN.match(stripped)
-        if match:
-            links.append(LinkListEntry(
-                match.group("name").strip(),
-                match.group("url").strip(),
-                match.group("key").strip(),
-            ))
+        parts = [part.strip() for part in line.strip().split(",")]
+        if len(parts) < 2 or len(parts) > 4:
             continue
-        match = LINK_LIST_LINE_PATTERN.match(stripped)
-        if match:
-            links.append(LinkListEntry(match.group("name").strip(), match.group("url").strip()))
+        name, url = parts[0], parts[1]
+        if not LINK_LIST_URL_PATTERN.match(url):
+            continue
+        key = parts[2] if len(parts) > 2 else ""
+        folder = parts[3] if len(parts) > 3 else ""
+        links.append(LinkListEntry(name, url, key, folder))
     return links
 
 
