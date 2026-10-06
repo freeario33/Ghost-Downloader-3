@@ -15,7 +15,7 @@ from app.config.cfg import cfg
 from app.i18n import N
 
 from app.models.pack import FeaturePack, TaskParser, FileType
-from app.models.task import PageTaskOptions, Task, TaskOptions
+from app.models.task import PageTaskOptions, ResourceTaskOptions, Task, TaskOptions
 from app.platform.filesystem import localFilePath, toSafeFilename
 from .config import m3u8Config, m3u8Runtime
 from .task import M3U8Task, M3U8TaskStep
@@ -34,6 +34,44 @@ def withExtension(name: str, extension: str) -> str:
     suffix = Path(name).suffix
     stem = name[:-len(suffix)] if suffix.lower() in MEDIA_SUFFIXES else name
     return f"{stem}.{extension}"
+
+
+def resolveName(options: TaskOptions, responseHeaders: dict, manifestUrl: str, extension: str) -> str:
+    """Pick the task name. User-supplied names win over server hints: page
+    title, then explicit resource name, then Content-Disposition, then the URL
+    query, then the URL path, finally stream.<extension>."""
+    name = ""
+    if isinstance(options, PageTaskOptions) and options.pageTitle:
+        name = toSafeFilename(options.pageTitle, fallback="")
+
+    if not name and isinstance(options, ResourceTaskOptions) and options.name:
+        name = toSafeFilename(options.name, fallback="")
+
+    if not name:
+        cd = responseHeaders.get("content-disposition", "")
+        if cd:
+            msg = Message()
+            msg["Content-Disposition"] = cd
+            params = msg.get_params(header="Content-Disposition")
+            paramDict = {k.lower(): v for k, v in params}
+            name = collapse_rfc2231_value(
+                paramDict.get("filename") or paramDict.get("filename*") or ""
+            ).strip("\"' ")
+
+    if not name:
+        parsedManifest = urlparse(manifestUrl)
+        for key in ("filename", "file", "name", "title"):
+            values = parse_qs(parsedManifest.query).get(key)
+            if values:
+                name = values[0]
+                break
+
+    if not name and urlparse(manifestUrl).path:
+        name = unquote(Path(urlparse(manifestUrl).path).name)
+
+    if name:
+        return toSafeFilename(withExtension(name, extension), fallback="stream")
+    return f"stream.{extension}"
 
 
 class M3U8Parser(TaskParser):
@@ -117,36 +155,7 @@ class M3U8Parser(TaskParser):
         extension = "ts" if isLive else m3u8Config.outputFormat.value
         streams = self._parseStreams(body, manifestType)
 
-        name = ""
-        if isinstance(options, PageTaskOptions) and options.pageTitle:
-            name = toSafeFilename(options.pageTitle, fallback="")
-
-        if not name:
-            cd = responseHeaders.get("content-disposition", "")
-            if cd:
-                msg = Message()
-                msg["Content-Disposition"] = cd
-                params = msg.get_params(header="Content-Disposition")
-                paramDict = {k.lower(): v for k, v in params}
-                name = collapse_rfc2231_value(
-                    paramDict.get("filename") or paramDict.get("filename*") or ""
-                ).strip("\"' ")
-
-        if not name:
-            parsedManifest = urlparse(manifestUrl)
-            for key in ("filename", "file", "name", "title"):
-                values = parse_qs(parsedManifest.query).get(key)
-                if values:
-                    name = values[0]
-                    break
-
-        if not name and urlparse(manifestUrl).path:
-            name = unquote(Path(urlparse(manifestUrl).path).name)
-
-        if name:
-            name = toSafeFilename(withExtension(name, extension), fallback="stream")
-        else:
-            name = f"stream.{extension}"
+        name = resolveName(options, responseHeaders, manifestUrl, extension)
 
         task = M3U8Task(
             name=name,
