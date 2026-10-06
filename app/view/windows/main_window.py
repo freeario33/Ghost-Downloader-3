@@ -123,6 +123,7 @@ class MainWindow(MSFluentWindow):
         self._pages: dict[str, QWidget] = {}
         self._progressToast = None
         self._draft = TaskDraft(self._coroutineRunner, self._featureService)
+        self._directDraft = TaskDraft(self._coroutineRunner, self._featureService)
         self.searchEdit = SearchLineEdit(self.titleBar)
 
         self._initWidget()
@@ -246,6 +247,8 @@ class MainWindow(MSFluentWindow):
 
     def _bind(self) -> None:
         self._draft.taskConfirmed.connect(self._taskService.add)
+        self._directDraft.taskConfirmed.connect(lambda task, autoStart: self._taskService.add(task, autoStart))
+        self._directDraft.parseFailed.connect(self._onDirectParseFailed)
         cfg.themeChanged.connect(self._setTheme)
         QApplication.instance().styleHints().colorSchemeChanged.connect(self._onSystemColorSchemeChanged)
         self.titleBar.closeBtn.clicked.disconnect(self.close)
@@ -511,7 +514,36 @@ class MainWindow(MSFluentWindow):
                     if line.strip() and self._featureService.match(line.strip())]
         if urls:
             expanded, nameByUrl, subfolderByUrl, keyByUrl = self._expandLinkListFiles(urls)
-            self.addUrls(expanded, nameByUrl, subfolderByUrl, keyByUrl)
+            if any(localFilePath(url, {".txt"}) is not None for url in urls):
+                self._addUrlsDirect(expanded, nameByUrl, subfolderByUrl, keyByUrl)
+            else:
+                self.addUrls(expanded, nameByUrl, subfolderByUrl, keyByUrl)
+
+    def _addUrlsDirect(self, urls: list[str], nameByUrl: dict[str, str] | None = None,
+                      subfolderByUrl: dict[str, str] | None = None,
+                      keyByUrl: dict[str, str] | None = None) -> None:
+        draft = self._directDraft
+        draft.clear()
+        if nameByUrl:
+            draft.setNameForUrl(nameByUrl)
+        if subfolderByUrl:
+            draft.setSubfolderForUrl(subfolderByUrl)
+        if keyByUrl:
+            draft.setKeyForUrl(keyByUrl)
+        draft.setUrls(urls)
+        draft.confirm(autoStart=False)
+
+    def _onDirectParseFailed(self, url: str, error: TaskError) -> None:
+        InfoBar(
+            icon=InfoBarIcon.ERROR,
+            title=self.tr("解析任务失败"),
+            content=toLocalizedError(error),
+            orient=Qt.Orientation.Horizontal,
+            isClosable=True,
+            duration=-1,
+            position=InfoBarPosition.BOTTOM_RIGHT,
+            parent=self,
+        ).show()
 
     def _expandLinkListFiles(self, urls: list[str]) -> tuple[list[str], dict[str, str], dict[str, str], dict[str, str]]:
         expanded: list[str] = []
