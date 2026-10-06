@@ -10,6 +10,8 @@ from stat import S_ISDIR
 from urllib.parse import urlparse
 from urllib.request import url2pathname
 
+from loguru import logger
+
 INVALID_FILENAME_PATTERN = re.compile(r'[\x00-\x1f\x7f<>:"/\\|?*]+')
 WINDOWS_RESERVED_FILENAMES = {
     "CON", "PRN", "AUX", "NUL",
@@ -109,22 +111,41 @@ class LinkListEntry:
     folder: str = ""
 
 
+def toSafeSubfolder(folder: str) -> str:
+    """Coerce a user-supplied folder into a pure relative subfolder.
+
+    Absolute paths, drive letters, `..` and empty segments are dropped so the
+    result can only ever name a location inside the caller's base folder.
+    """
+    parts = re.split(r"[\\/]+", str(folder or ""))
+    safe = [cleaned for part in parts
+            if (cleaned := toSafeFilename(part, fallback="")) and cleaned not in {".", ".."}]
+    return "/".join(safe)
+
+
 def parseLinkList(text: str) -> list[LinkListEntry]:
     """Parse lines of `name,url[,key[,folder]]` into entries.
 
-    Segments are positional: segment 1 is the name, segment 2 must be a URL
+    Segments are positional: segment 1 is the name, segment 2 is the URL
     (`scheme://...`), segment 3 is the key, segment 4 is the folder. Key and
     folder are optional and may each be empty; an empty segment is treated as
-    absent, and trailing empty segments are ignored. Lines with fewer than two
-    segments, an invalid URL, or more than four segments are skipped.
+    absent, and trailing empty segments are ignored. A comma is always a
+    delimiter, so URLs containing a comma must encode it as `%2C`; such lines
+    are skipped and logged. Lines with fewer than two segments, more than four
+    segments, or an invalid URL are skipped.
     """
     links: list[LinkListEntry] = []
     for line in text.splitlines():
-        parts = [part.strip() for part in line.strip().split(",")]
+        stripped = line.strip()
+        if not stripped:
+            continue
+        parts = [part.strip() for part in stripped.split(",")]
         if len(parts) < 2 or len(parts) > 4:
+            logger.warning("跳过链接清单中的非法行（段数 {}）: {}", len(parts), stripped)
             continue
         name, url = parts[0], parts[1]
         if not LINK_LIST_URL_PATTERN.match(url):
+            logger.warning("跳过链接清单中的非法行（URL 无效或含逗号）: {}", stripped)
             continue
         key = parts[2] if len(parts) > 2 else ""
         folder = parts[3] if len(parts) > 3 else ""

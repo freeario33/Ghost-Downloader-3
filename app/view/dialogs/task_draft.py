@@ -232,6 +232,10 @@ class TaskDraftDialog(MessageBoxBase):
         self._parseTimer.stop()
         self.draftGroup.clear()
         self.draftGroup.updateStats(0, 0, 0)
+        self._nameByUrl.clear()
+        self._subfolderByUrl.clear()
+        self._keyByUrl.clear()
+        self._folderByUrl.clear()
 
         if self._isStandalone:
             self._standaloneWrapper.hide()

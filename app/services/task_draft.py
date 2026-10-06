@@ -11,6 +11,7 @@ from loguru import logger
 
 from app.config.cfg import cfg
 from app.models.task import ResourceTaskOptions, TaskOptions, toTaskError
+from app.platform.filesystem import toSafeSubfolder
 
 if TYPE_CHECKING:
     from app.models.task import Task, TaskError
@@ -247,14 +248,13 @@ class TaskDraft:
         options = self._baseOptions.copy()
         if item.categoryOverride is not None:
             options["category"] = item.categoryOverride
-        subfolder = self._subfolderByUrl.get(item.url, "")
-        folder = self._folderByUrl.get(item.url, "")
+        subfolder = toSafeSubfolder(self._subfolderByUrl.get(item.url, ""))
+        folder = toSafeSubfolder(self._folderByUrl.get(item.url, ""))
         if subfolder or folder:
             base = Path(options.get("outputFolder") or cfg.downloadFolder.value)
-            if subfolder:
-                base = base / subfolder
-            if folder:
-                base = base / folder
+            for layer in (subfolder, folder):
+                if layer:
+                    base = base / layer
             options["outputFolder"] = base
         key = self._keyByUrl.get(item.url, "")
         if key:

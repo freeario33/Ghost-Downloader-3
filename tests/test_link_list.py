@@ -4,7 +4,7 @@ Seam: app.platform.filesystem.parseLinkList。
 """
 from __future__ import annotations
 
-from app.platform.filesystem import LinkListEntry, parseLinkList
+from app.platform.filesystem import LinkListEntry, parseLinkList, toSafeSubfolder
 
 
 class TestParseLinkList:
@@ -62,3 +62,38 @@ class TestParseLinkList:
     def test_skips_invalid_url(self):
         entries = parseLinkList("影片,not-a-url")
         assert entries == []
+
+    def test_comma_in_url_is_dropped_with_warning(self):
+        entries = parseLinkList("影片,https://example.com/a.mp4?x=1,y=2,key,dir")
+        assert entries == []
+
+    def test_encoded_comma_in_url_is_kept(self):
+        entries = parseLinkList("影片,https://example.com/a.mp4?x=1%2Cy=2")
+        assert entries == [LinkListEntry("影片", "https://example.com/a.mp4?x=1%2Cy=2")]
+
+
+class TestToSafeSubfolder:
+
+    def test_strips_parent_segments(self):
+        assert toSafeSubfolder("../../etc") == "etc"
+
+    def test_drops_absolute_prefix(self):
+        assert toSafeSubfolder("/abs/path") == "abs/path"
+
+    def test_collapses_inner_parent_segments(self):
+        assert toSafeSubfolder("a/../../b") == "a/b"
+
+    def test_strips_drive_letter(self):
+        assert toSafeSubfolder("C:\\x") == "C_/x"
+
+    def test_pure_parent_is_empty(self):
+        assert toSafeSubfolder("..") == ""
+
+    def test_normal_subfolder_unchanged(self):
+        assert toSafeSubfolder("normal/sub") == "normal/sub"
+
+    def test_empty_is_empty(self):
+        assert toSafeSubfolder("") == ""
+
+    def test_collapses_duplicate_separators(self):
+        assert toSafeSubfolder("a//b") == "a/b"

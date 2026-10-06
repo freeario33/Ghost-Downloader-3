@@ -16,6 +16,8 @@ from qfluentwidgets.common import qrouter
 from qfluentwidgets.common.style_sheet import updateStyleSheet
 from qfluentwidgets.components.dialog_box.mask_dialog_base import MaskDialogBase
 
+from loguru import logger
+
 from app.config.cfg import CloseMode, cfg
 from app.config.constants import DONATE_URL, FEEDBACK_URL
 from app.config.paths import APP_DATA_DIR
@@ -537,10 +539,11 @@ class MainWindow(MSFluentWindow):
         draft.confirm(autoStart=False)
 
     def _onDirectParseFailed(self, url: str, error: TaskError) -> None:
+        logger.warning("直接入队解析失败 {}: {}", url, error)
         InfoBar(
             icon=InfoBarIcon.ERROR,
             title=self.tr("解析任务失败"),
-            content=toLocalizedError(error),
+            content=f"{url}\n{toLocalizedError(error)}",
             orient=Qt.Orientation.Horizontal,
             isClosable=True,
             duration=-1,
